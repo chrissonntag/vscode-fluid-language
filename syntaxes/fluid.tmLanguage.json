@@ -1,0 +1,212 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Fluid",
+	"scopeName": "text.html.fluid",
+	"patterns": [
+		{
+			"include": "#namespace-inline"
+		},
+		{
+			"include": "text.html.basic#xml-processing"
+		},
+		{
+			"include": "text.html.basic#comment"
+		},
+		{
+			"include": "#comment"
+		},
+		{
+			"include": "text.html.basic#doctype"
+		},
+		{
+			"include": "#cdata"
+		},
+		{
+			"include": "#namespace-xmlns"
+		},
+		{
+			"include": "#viewhelper-tag"
+		},
+		{
+			"include": "text.html.basic#tags-valid"
+		},
+		{
+			"include": "#variable"
+		},
+		{
+			"include": "#viewhelper-expression"
+		},
+		{
+			"include": "text.html.basic#entities"
+		}
+	],
+	"repository": {
+		"cdata": {
+			"begin": "<!\\[CDATA\\[",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.tag.begin"
+				}
+			},
+			"contentName": "string.other.inline-data",
+			"end": "]]>",
+			"patterns": [
+				{
+					"name": "variable.language",
+					"match": "\\{\\{\\{(true|false|null|_all)\\}\\}\\}"
+				},
+				{
+					"name": "variable.other",
+					"match": "\\{\\{\\{[a-zA-Z0-9_\\-\\.]+\\}\\}\\}"
+				}
+			],
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.tag.end"
+				}
+			},
+			"name": "meta.tag.metadata.cdata.html"
+		},
+		"comment": {
+			"patterns": [
+				{
+					"name": "comment.block",
+					"begin": "<f:comment>",
+					"end": "</f:comment>"
+				}
+			]
+		},
+		"namespace-inline": {
+			"patterns": [
+				{
+					"name": "support.type",
+					"match": "\\{namespace\\s+[a-zA-Z\\*]+[a-zA-Z0-9\\.\\*]*\\s*(=\\s*(([A-Za-z0-9\\.]+|Tx)(\\\\\\w+)+)\\s*)?}"
+				}
+			]
+		},
+		"namespace-xmlns": {
+			"begin": "(?i)(<)(html)(?=\\s|/?>)",
+			"beginCaptures": {
+				"1": {
+					"name": "punctuation.definition.tag.begin.html"
+				},
+				"2": {
+					"name": "entity.name.tag.html"
+				}
+			},
+			"end": ">",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.tag.end.html"
+				}
+			},
+			"name": "meta.tag.structure.$2.start.html",
+			"patterns": [
+				{
+					"name": "support.type",
+					"begin": "xmlns:[a-zA-Z\\*]+[a-zA-Z0-9\\.\\*]*",
+					"end": "(?=\\s*+[^=\\s])",
+					"patterns": [
+						{
+							"include": "text.html.basic#attribute-interior"
+						}
+					]
+				},
+				{
+					"name": "support.type",
+					"match": "data-namespace-typo3-fluid=\\\"true\\\""
+				},
+				{
+					"include": "text.html.basic#attribute"
+				}
+			]
+		},
+		"viewhelper-tag": {
+			"patterns": [
+				{
+					"begin": "(?i)(<)([a-zA-Z\\*]+[a-zA-Z0-9\\.\\*]*:[a-zA-Z0-9\\.]+)(?=\\s|/?>)",
+					"beginCaptures": {
+						"1": {
+							"name": "punctuation.definition.tag.begin.html"
+						},
+						"2": {
+							"name": "entity.name.function"
+						}
+					},
+					"end": ">",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.tag.end.html"
+						}
+					},
+					"name": "meta.tag.structure.$2.start.html",
+					"patterns": [
+						{
+							"include": "text.html.basic#attribute"
+						}
+					]
+				},
+				{
+					"begin": "(?i)(</)([a-zA-Z\\*]+[a-zA-Z0-9\\.\\*]*:[a-zA-Z0-9\\.]+)(?=\\s|/?>)",
+					"beginCaptures": {
+						"1": {
+							"name": "punctuation.definition.tag.begin.html"
+						},
+						"2": {
+							"name": "entity.name.function"
+						}
+					},
+					"end": ">",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.tag.end.html"
+						}
+					},
+					"name": "meta.tag.structure.$2.end.html",
+					"patterns": [
+						{
+							"include": "text.html.basic#attribute"
+						}
+					]
+				}
+			]
+		},
+		"viewhelper-expression": {
+			"patterns": [
+				{
+					"begin": "\\{",
+					"end": "\\}",
+					"patterns": [
+						{
+							"name": "variable.language",
+							"match": "(?<=\\{)(true|false|null|_all)(?=\\s*\\->|\\})"
+						},
+						{
+							"name": "variable.other",
+							"match": "(?<=\\{)[a-zA-Z0-9_\\-\\.]+(?=\\s*\\->|\\})"
+						},
+						{
+							"begin": "([a-zA-Z\\*]+[a-zA-Z0-9\\.\\*]*:[a-zA-Z0-9_\\-\\.]+)\\s*\\(",
+							"end": "\\)\\s*",
+							"beginCaptures": {
+								"1": {
+									"name": "entity.name.function"
+								}
+							},
+							"patterns": [
+								{
+									"match": "(?<=\\(|\\s|,)([a-zA-Z0-9_\\-]+)\\s*:",
+									"name": "variable.parameter"
+								},
+								{
+									"match": "(?<=:\\s*).+(?=,|\\))",
+									"name": "variable.other"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	}
+}

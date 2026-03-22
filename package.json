@@ -1,0 +1,30 @@
+{
+  "name": "vscode-fluid-language",
+  "displayName": "Fluid Template Language",
+  "description": "VScode extension for Fluid Template Language",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.110.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "fluid",
+      "aliases": ["Fluid", "fluid"],
+      "filenamePatterns": ["*.fluid.*"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "fluid",
+      "scopeName": "text.html.fluid",
+      "path": "./syntaxes/fluid.tmLanguage.json",
+      "embeddedLanguages": {
+        "text.html": "html",
+        "source.css": "css",
+        "source.js": "javascript"
+      }
+    }]
+  }
+}
