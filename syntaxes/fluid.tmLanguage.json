@@ -1,14 +1,30 @@
 {
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
 	"name": "Fluid",
-	"scopeName": "text.html.fluid",
+	"scopeName": "text.fluid",
 	"injections": {
-		"R:text.html - (comment.block, text.html meta.embedded, meta.tag.*.*.html, meta.tag.*.*.*.html, meta.tag.*.*.*.*.html)": {
+		"R:text.fluid - (comment.block, text.html meta.embedded, meta.tag.*.*.html, meta.tag.*.*.*.html, meta.tag.*.*.*.*.html)": {
 			"comment": "Uses R: to ensure this matches after any other injections.",
 			"patterns": [
 				{
 					"match": "<",
 					"name": "invalid.illegal.bad-angle-bracket.html"
+				}
+			]
+		},
+		"L:meta.tag - (meta.tag.metadata.cdata)": {
+			"comment": "Allow inline expressions within regular HTML tags",
+			"patterns": [
+				{
+					"include": "#viewhelper-expression"
+				}
+			]
+		},
+		"L:comment.block.html": {
+			"comment": "Allow inline expressions within regular HTML comments",
+			"patterns": [
+				{
+					"include": "#viewhelper-expression"
 				}
 			]
 		}
@@ -50,10 +66,10 @@
 	],
 	"repository": {
 		"attribute": {
-			"begin": "([a-z\\-]+)(?![\\w:-])",
+			"begin": "([a-zA-Z\\-]+)(?![\\w:-])",
 			"beginCaptures": {
 				"0": {
-					"name": "entity.other.attribute-name"
+					"name": "entity.other.attribute-name.fluid"
 				}
 			},
 			"end": "(?=\\s*+[^=\\s])",
@@ -70,72 +86,31 @@
 					"begin": "=",
 					"beginCaptures": {
 						"0": {
-							"name": "punctuation.separator.key-value"
+							"name": "punctuation.separator.key-value.fluid"
 						}
 					},
 					"end": "(?<=[^\\s=])(?!\\s*=)|(?=/?>)",
 					"patterns": [
 						{
-							"match": "([^\\s\"'=<>`/]|/(?!>))+",
-							"name": "string.unquoted"
-						},
-						{
-							"begin": "(\")\\{",
-							"beginCaptures": {
-								"1": {
-									"name": "punctuation.definition.string.begin"
-								}
-							},
-							"end": "\\}(\")",
-							"endCaptures": {
-								"1": {
-									"name": "punctuation.definition.string.end"
-								}
-							},
-							"name": "string.quoted.double",
-							"patterns": [
-								{
-									"include": "#array"
-								}
-							]
-						},
-						{
 							"begin": "\"",
 							"beginCaptures": {
 								"0": {
-									"name": "punctuation.definition.string.begin"
+									"name": "punctuation.definition.string.begin.fluid"
 								}
 							},
 							"end": "\"",
 							"endCaptures": {
 								"0": {
-									"name": "punctuation.definition.string.end"
+									"name": "punctuation.definition.string.end.fluid"
 								}
 							},
-							"name": "string.quoted.double",
+							"name": "string.quoted.double.fluid",
 							"patterns": [
+								{
+									"include": "#viewhelper-expression"
+								},
 								{
 									"include": "text.html.basic#entities"
-								}
-							]
-						},
-						{
-							"begin": "(')\\{",
-							"beginCaptures": {
-								"1": {
-									"name": "punctuation.definition.string.begin"
-								}
-							},
-							"end": "\\}(')",
-							"name": "string.quoted.single",
-							"endCaptures": {
-								"1": {
-									"name": "punctuation.definition.string.end"
-								}
-							},
-							"patterns": [
-								{
-									"include": "#array"
 								}
 							]
 						},
@@ -143,17 +118,20 @@
 							"begin": "'",
 							"beginCaptures": {
 								"0": {
-									"name": "punctuation.definition.string.begin"
+									"name": "punctuation.definition.string.begin.fluid"
 								}
 							},
 							"end": "'",
 							"endCaptures": {
 								"0": {
-									"name": "punctuation.definition.string.end"
+									"name": "punctuation.definition.string.end.fluid"
 								}
 							},
-							"name": "string.quoted.single",
+							"name": "string.quoted.single.fluid",
 							"patterns": [
+								{
+									"include": "#viewhelper-expression"
+								},
 								{
 									"include": "text.html.basic#entities"
 								}
@@ -161,7 +139,7 @@
 						},
 						{
 							"match": "=",
-							"name": "invalid.illegal.unexpected-equals-sign"
+							"name": "invalid.illegal.unexpected-equals-sign.fluid"
 						}
 					]
 				}
@@ -174,29 +152,29 @@
 					"name": "punctuation.definition.tag.begin"
 				}
 			},
-			"contentName": "string.other.inline-data",
+			"contentName": "string.other.inline-data.fluid",
 			"end": "]]>",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.tag.end.fluid"
+				}
+			},
 			"patterns": [
 				{
-					"name": "variable.language",
+					"name": "variable.language.fluid",
 					"match": "\\{\\{\\{(true|false|null|_all)\\}\\}\\}"
 				},
 				{
-					"name": "variable.other",
+					"name": "variable.other.fluid",
 					"match": "\\{\\{\\{[a-zA-Z0-9_\\-\\.]+\\}\\}\\}"
 				}
 			],
-			"endCaptures": {
-				"0": {
-					"name": "punctuation.definition.tag.end"
-				}
-			},
-			"name": "meta.tag.metadata.cdata.html"
+			"name": "meta.tag.metadata.cdata.fluid"
 		},
 		"comment": {
 			"patterns": [
 				{
-					"name": "comment.block",
+					"name": "comment.block.fluid",
 					"begin": "<f:comment>",
 					"end": "</f:comment>"
 				}
@@ -205,8 +183,24 @@
 		"namespace-inline": {
 			"patterns": [
 				{
-					"name": "support.type",
-					"match": "\\{namespace\\s+[a-zA-Z\\*]+[a-zA-Z0-9\\.\\*]*\\s*(=\\s*(([A-Za-z0-9\\.]+|Tx)(\\\\\\w+)+)\\s*)?}"
+					"match": "(\\{)(namespace\\s+[a-zA-Z\\*]+[a-zA-Z0-9\\.\\*]*)\\s*((=)\\s*(([A-Za-z0-9\\.]+|Tx)(\\\\\\w+)+)\\s*)?(})",
+					"captures": {
+						"1": {
+							"name": "punctuation.definition.expression.begin.fluid"
+						},
+						"2": {
+							"name": "support.type.fluid"
+						},
+						"4": {
+							"name": "punctuation.separator.key-value.fluid"
+						},
+						"5": {
+							"name": "string.quoted.double.fluid"
+						},
+						"6": {
+							"name": "punctuation.definition.expression.end.fluid"
+						}
+					}
 				}
 			]
 		},
@@ -229,8 +223,12 @@
 			"name": "meta.tag.structure.$2.start.html",
 			"patterns": [
 				{
-					"name": "support.type",
 					"begin": "xmlns:[a-zA-Z\\*]+[a-zA-Z0-9\\.\\*]*",
+					"beginCaptures": {
+						"0": {
+							"name": "support.type.fluid"
+						}
+					},
 					"end": "(?=\\s*+[^=\\s])",
 					"patterns": [
 						{
@@ -239,8 +237,18 @@
 					]
 				},
 				{
-					"name": "support.type",
-					"match": "data-namespace-typo3-fluid=\\\"true\\\""
+					"match": "(data-namespace-typo3-fluid)(=)(\\\"true\\\")",
+					"captures": {
+						"1": {
+							"name": "support.type"
+						},
+						"2": {
+							"name": "punctuation.separator.key-value.html"
+						},
+						"3": {
+							"name": "string.quoted.double.html"
+						}
+					}
 				},
 				{
 					"include": "text.html.basic#attribute"
@@ -253,22 +261,27 @@
 					"begin": "(?i)(<)([a-zA-Z\\*]+[a-zA-Z0-9\\.\\*]*:[a-zA-Z0-9\\.]+)(?=\\s|/?>)",
 					"beginCaptures": {
 						"1": {
-							"name": "punctuation.definition.tag.begin.html"
+							"name": "punctuation.definition.tag.begin.fluid"
 						},
 						"2": {
-							"name": "entity.name.function"
+							"name": "entity.name.function.fluid"
 						}
 					},
 					"end": ">",
 					"endCaptures": {
 						"0": {
-							"name": "punctuation.definition.tag.end.html"
+							"name": "punctuation.definition.tag.end.fluid"
 						}
 					},
-					"name": "meta.tag.structure.$2.start.html",
+					"name": "meta.tag.structure.$2.start.fluid",
 					"patterns": [
 						{
 							"include": "#attribute"
+						},
+						{
+							"begin": "\\{",
+							"end": "\\}",
+							"name": "invalid.illegal.viewhelper-expression-in-viewhelper-tag"
 						}
 					]
 				},
@@ -276,19 +289,19 @@
 					"begin": "(?i)(</)([a-zA-Z\\*]+[a-zA-Z0-9\\.\\*]*:[a-zA-Z0-9\\.]+)(?=\\s|/?>)",
 					"beginCaptures": {
 						"1": {
-							"name": "punctuation.definition.tag.begin.html"
+							"name": "punctuation.definition.tag.begin.fluid"
 						},
 						"2": {
-							"name": "entity.name.function"
+							"name": "entity.name.function.fluid"
 						}
 					},
 					"end": ">",
 					"endCaptures": {
 						"0": {
-							"name": "punctuation.definition.tag.end.html"
+							"name": "punctuation.definition.tag.end.fluid"
 						}
 					},
-					"name": "meta.tag.structure.$2.end.html",
+					"name": "meta.tag.structure.$2.end.fluid",
 					"patterns": [
 						{
 							"include": "#attribute"
@@ -298,87 +311,94 @@
 			]
 		},
 		"viewhelper-expression": {
+			"name": "entity.expression.fluid",
+			"begin": "\\{",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.tag.begin.fluid"
+				}
+			},
+			"end": "\\}",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.tag.end.fluid"
+				}
+			},
 			"patterns": [
 				{
-					"begin": "\\{",
+					"name": "variable.language.fluid",
+					"match": "(?<=\\{)(true|false|null|_all)(?=\\s*\\->|\\})"
+				},
+				{
+					"name": "variable.other.fluid",
+					"match": "(?<=\\{)[a-zA-Z0-9_\\-\\.]+(?=\\s*\\->|\\})"
+				},
+				{
+					"begin": "(\\->)?\\s*([a-zA-Z\\*]+[a-zA-Z0-9\\.\\*]*:[a-zA-Z0-9_\\-\\.]+)\\s*(\\()",
+					"end": "\\)",
 					"beginCaptures": {
-						"0": {
-							"name": "punctuation.definition.expression.begin"
+						"1": {
+							"name": "punctuation.definition.function.arrow.fluid"
+						},
+						"2": {
+							"name": "entity.name.function.fluid"
+						},
+						"3": {
+							"name": "punctuation.definition.function.begin.fluid"
 						}
 					},
-					"end": "\\}",
 					"endCaptures": {
 						"0": {
-							"name": "punctuation.definition.expression.end"
+							"name": "punctuation.definition.function.end.fluid"
 						}
 					},
 					"patterns": [
 						{
-							"name": "variable.language",
-							"match": "(?<=\\{)(true|false|null|_all)(?=\\s*\\->|\\})"
-						},
-						{
-							"name": "variable.other",
-							"match": "(?<=\\{)[a-zA-Z0-9_\\-\\.]+(?=\\s*\\->|\\})"
-						},
-						{
-							"begin": "(\\->)?\\s*([a-zA-Z\\*]+[a-zA-Z0-9\\.\\*]*:[a-zA-Z0-9_\\-\\.]+)\\s*(\\()",
-							"end": "\\)",
-							"beginCaptures": {
-								"1": {
-									"name": "punctuation.definition.function.arrow"
-								},
+							"match": "(?<=(^|[\\(,])\\s*)([a-zA-Z0-9_\\-]+)(?=\\s*:)",
+							"captures": {
 								"2": {
-									"name": "entity.name.function"
-								},
-								"3": {
-									"name": "punctuation.definition.function.begin"
+									"name": "entity.other.attribute-name.fluid"
 								}
-							},
-							"endCaptures": {
-								"0": {
-									"name": "punctuation.definition.function.end"
-								}
-							},
+							}
+						},
+						{
+							"begin": ":",
+							"end": "(?=[,\\)\\n])",
 							"patterns": [
 								{
-									"match": "(?<=(^|[\\(,])\\s*)([a-zA-Z0-9_\\-]+)(?=\\s*:)",
-									"captures": {
-										"2": {
-											"name": "entity.other.attribute-name"
-										}
-									}
+									"match": "(?<=:\\s*)(true|false|null|_all)(?=\\s*[,\\)\\n])",
+									"name": "variable.language.fluid"
 								},
 								{
-									"begin": ":",
-									"end": "(?=[,\\)\\n])",
+									"match": "(?<=:\\s*)[a-zA-Z0-9_\\-\\.]+(?=\\s*[,\\)\\n])",
+									"name": "variable.other.fluid"
+								},
+								{
+									"begin": "(?<=:\\s*)\\\"",
+									"end": "\\\"(?=\\s*[,\\)\\n])",
+									"name": "string.quoted.double.fluid",
 									"patterns": [
 										{
-											"match": "(?<=:\\s*)(true|false|null|_all)(?=\\s*[,\\)\\n])",
-											"name": "variable.language"
-										},
+											"include": "#viewhelper-expression"
+										}
+									]
+								},
+								{
+									"begin": "(?<=:\\s*)'",
+									"end": "'(?=\\s*[,\\)\\n])",
+									"name": "string.quoted.single.fluid",
+									"patterns": [
 										{
-											"match": "(?<=:\\s*)[a-zA-Z0-9_\\-\\.]+(?=\\s*[,\\)\\n])",
-											"name": "variable.other"
-										},
+											"include": "#viewhelper-expression"
+										}
+									]
+								},
+								{
+									"begin": "(?<=:\\s*)\\{",
+									"end": "\\}(?=\\s*[,\\)\\n])",
+									"patterns": [
 										{
-											"begin": "(?<=:\\s*)\\\"",
-											"end": "\\\"(?=\\s*[,\\)\\n])",
-											"name": "string.quoted.double"
-										},
-										{
-											"begin": "(?<=:\\s*)'",
-											"end": "'(?=\\s*[,\\)\\n])",
-											"name": "string.quoted.single"
-										},
-										{
-											"begin": "(?<=:\\s*)\\{",
-											"end": "\\}(?=\\s*[,\\)\\n])",
-											"patterns": [
-												{
-													"include": "#array"
-												}
-											]
+											"include": "#array"
 										}
 									]
 								}
@@ -394,7 +414,7 @@
 					"match": "(?<=(^|[\\{,])\\s*)([a-zA-Z0-9_\\-]+)(?=\\s*:)",
 					"captures": {
 						"2": {
-							"name": "entity.other.attribute-name"
+							"name": "entity.other.attribute-name.fluid"
 						}
 					}
 				},
@@ -404,21 +424,21 @@
 					"patterns": [
 						{
 							"match": "(?<=:\\s*)(true|false|null|_all)(?=\\s*[,\\}\\n])",
-							"name": "variable.language"
+							"name": "variable.language.fluid"
 						},
 						{
 							"match": "(?<=:\\s*)[a-zA-Z0-9_\\-\\.]+(?=\\s*[,\\}\\n])",
-							"name": "variable.other"
+							"name": "variable.other.fluid"
 						},
 						{
 							"begin": "(?<=:\\s*)\\\"",
 							"end": "\\\"(?=\\s*[,\\}\\n])",
-							"name": "string.quoted.double"
+							"name": "string.quoted.double.fluid"
 						},
 						{
 							"begin": "(?<=:\\s*)'",
 							"end": "'(?=\\s*[,\\}\\n])",
-							"name": "string.quoted.single"
+							"name": "string.quoted.single.fluid"
 						},
 						{
 							"begin": "(?<=:\\s*)\\{",
