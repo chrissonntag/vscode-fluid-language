@@ -12,7 +12,7 @@
 				}
 			]
 		},
-		"L:meta.tag - (meta.tag.metadata.cdata)": {
+		"L:meta.tag - (meta.tag.metadata.cdata, meta.viewhelper)": {
 			"comment": "Allow inline expressions within regular HTML tags",
 			"patterns": [
 				{
@@ -73,7 +73,7 @@
 				}
 			},
 			"end": "(?=\\s*+[^=\\s])",
-			"name": "meta.attribute",
+			"name": "meta.attribute.fluid",
 			"patterns": [
 				{
 					"include": "#attribute-interior"
@@ -149,7 +149,7 @@
 			"begin": "<!\\[CDATA\\[",
 			"beginCaptures": {
 				"0": {
-					"name": "punctuation.definition.tag.begin"
+					"name": "punctuation.definition.tag.begin.fluid"
 				}
 			},
 			"contentName": "string.other.inline-data.fluid",
@@ -240,7 +240,7 @@
 					"match": "(data-namespace-typo3-fluid)(=)(\\\"true\\\")",
 					"captures": {
 						"1": {
-							"name": "support.type"
+							"name": "support.type.fluid"
 						},
 						"2": {
 							"name": "punctuation.separator.key-value.html"
@@ -273,7 +273,7 @@
 							"name": "punctuation.definition.tag.end.fluid"
 						}
 					},
-					"name": "meta.tag.structure.$2.start.fluid",
+					"name": "meta.viewhelper.structure.$2.start.fluid",
 					"patterns": [
 						{
 							"include": "#attribute"
@@ -281,7 +281,7 @@
 						{
 							"begin": "\\{",
 							"end": "\\}",
-							"name": "invalid.illegal.viewhelper-expression-in-viewhelper-tag"
+							"name": "invalid.illegal.viewhelper-expression-in-viewhelper-tag.fluid"
 						}
 					]
 				},
@@ -301,7 +301,7 @@
 							"name": "punctuation.definition.tag.end.fluid"
 						}
 					},
-					"name": "meta.tag.structure.$2.end.fluid",
+					"name": "meta.viewhelper.structure.$2.end.fluid",
 					"patterns": [
 						{
 							"include": "#attribute"
