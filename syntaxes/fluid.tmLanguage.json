@@ -65,7 +65,7 @@
 		}
 	],
 	"repository": {
-		"attribute": {
+		"viewhelper-tag-attribute": {
 			"begin": "([a-zA-Z\\-]+)(?![\\w:-])",
 			"beginCaptures": {
 				"0": {
@@ -76,11 +76,11 @@
 			"name": "meta.attribute.fluid",
 			"patterns": [
 				{
-					"include": "#attribute-interior"
+					"include": "#viewhelper-tag-attribute-interior"
 				}
 			]
 		},
-		"attribute-interior": {
+		"viewhelper-tag-attribute-interior": {
 			"patterns": [
 				{
 					"begin": "=",
@@ -161,12 +161,15 @@
 			},
 			"patterns": [
 				{
-					"name": "variable.language.fluid",
-					"match": "\\{\\{\\{(true|false|null|_all)\\}\\}\\}"
-				},
-				{
-					"name": "variable.other.fluid",
-					"match": "\\{\\{\\{[a-zA-Z0-9_\\-\\.]+\\}\\}\\}"
+					"match": "\\{\\{\\{((true|false|null|_all)|([a-zA-Z0-9_\\-\\.]+))\\}\\}\\}",
+					"captures": {
+						"2": {
+							"name": "variable.language.fluid"
+						},
+						"3": {
+							"name": "variable.other.fluid"
+						}
+					}
 				}
 			],
 			"name": "meta.tag.metadata.cdata.fluid"
@@ -276,7 +279,7 @@
 					"name": "meta.viewhelper.structure.$2.start.fluid",
 					"patterns": [
 						{
-							"include": "#attribute"
+							"include": "#viewhelper-tag-attribute"
 						},
 						{
 							"begin": "\\{",
@@ -304,7 +307,7 @@
 					"name": "meta.viewhelper.structure.$2.end.fluid",
 					"patterns": [
 						{
-							"include": "#attribute"
+							"include": "#viewhelper-tag-attribute"
 						}
 					]
 				}
@@ -324,14 +327,53 @@
 					"name": "punctuation.definition.tag.end.fluid"
 				}
 			},
-			"patterns": [
+			"patterns": [			
 				{
-					"name": "variable.language.fluid",
-					"match": "(?<=\\{)(true|false|null|_all)(?=\\s*\\->|\\})"
+					"match": "(?<=\\{)((true|false|null|_all)|([a-zA-Z0-9_\\-\\.]+))(?=\\s+as|\\s*[-\\^+%/*?]|\\})",
+					"captures": {
+						"2": {
+							"name": "variable.language.fluid"
+						},
+						"3": {
+							"name": "variable.other.fluid"
+						}
+					}
 				},
 				{
-					"name": "variable.other.fluid",
-					"match": "(?<=\\{)[a-zA-Z0-9_\\-\\.]+(?=\\s*\\->|\\})"
+					"match": "(?<=\\s+)as\\s+(integer|boolean|string|float|array|DateTime)(?=\\})",
+					"captures": {
+						"1": {
+							"name": "support.type.fluid"
+						}
+					}
+				},
+				{
+					"match": "\\?\\s*((true|false|null|_all)|([a-zA-Z0-9_\\-\\.]+))\\s*:\\s*((true|false|null|_all)|([a-zA-Z0-9_\\-\\.]+))(?=\\})",
+					"captures": {
+						"2": {
+							"name": "variable.language.fluid"
+						},
+						"3": {
+							"name": "variable.other.fluid"
+						},
+						"5": {
+							"name": "variable.language.fluid"
+						},
+						"6": {
+							"name": "variable.other.fluid"
+						}
+					}
+				},
+				{
+					"match": "\\?:\\s*((true|false|null|_all)|([a-zA-Z0-9_\\-\\.]+))(?=\\})",
+					"captures": {
+						"2": {
+							"name": "variable.language.fluid"
+						},
+						"3": {
+							"name": "variable.other.fluid"
+						}
+					}
 				},
 				{
 					"begin": "(\\->)?\\s*([a-zA-Z\\*]+[a-zA-Z0-9\\.\\*]*:[a-zA-Z0-9_\\-\\.]+)\\s*(\\()",
@@ -366,12 +408,15 @@
 							"end": "(?=[,\\)\\n])",
 							"patterns": [
 								{
-									"match": "(?<=:\\s*)(true|false|null|_all)(?=\\s*[,\\)\\n])",
-									"name": "variable.language.fluid"
-								},
-								{
-									"match": "(?<=:\\s*)[a-zA-Z0-9_\\-\\.]+(?=\\s*[,\\)\\n])",
-									"name": "variable.other.fluid"
+									"match": "(?<=:\\s*)(true|false|null|_all)|([a-zA-Z0-9_\\-\\.]+)(?=\\s*[,\\)\\n])",
+									"captures": {
+										"1": {
+											"name": "variable.language.fluid"
+										},
+										"2": {
+											"name": "variable.other.fluid"
+										}
+									}
 								},
 								{
 									"begin": "(?<=:\\s*)\\\"",
@@ -423,12 +468,15 @@
 					"end": "(?=[,\\}\\n])",
 					"patterns": [
 						{
-							"match": "(?<=:\\s*)(true|false|null|_all)(?=\\s*[,\\}\\n])",
-							"name": "variable.language.fluid"
-						},
-						{
-							"match": "(?<=:\\s*)[a-zA-Z0-9_\\-\\.]+(?=\\s*[,\\}\\n])",
-							"name": "variable.other.fluid"
+							"match": "(?<=:\\s*)(true|false|null|_all)|([a-zA-Z0-9_\\-\\.]+)(?=\\s*[,\\}\\n])",
+							"captures": {
+								"1": {
+									"name": "variable.language.fluid"
+								},
+								"2": {
+									"name": "variable.other.fluid"
+								}
+							}
 						},
 						{
 							"begin": "(?<=:\\s*)\\\"",
