@@ -62,6 +62,29 @@
 		},
 		{
 			"include": "text.html.basic#entities"
+		},
+		{
+			"begin": "(</?)(\\w[^\\s<>]*)(?<!/)",
+			"beginCaptures": {
+				"1": {
+					"name": "punctuation.definition.tag.begin.html"
+				},
+				"2": {
+					"name": "entity.name.tag.html"
+				}
+			},
+			"end": "((?: ?/)?>)",
+			"endCaptures": {
+				"1": {
+					"name": "punctuation.definition.tag.end.html"
+				}
+			},
+			"name": "meta.tag.other.unrecognized.html.derivative",
+			"patterns": [
+				{
+					"include": "text.html.basic#attribute"
+				}
+			]
 		}
 	],
 	"repository": {
