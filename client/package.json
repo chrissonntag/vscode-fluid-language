@@ -1,0 +1,13 @@
+{
+  "name": "vscode-fluid-language-client",
+  "description": "VSCode part of the language server",
+  "license": "MIT",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.110.0"
+  },
+  "scripts": {},
+  "devDependencies": {
+    "@types/vscode": "^1.110.0"
+  }
+}

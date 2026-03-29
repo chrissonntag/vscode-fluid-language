@@ -10,6 +10,7 @@
   "categories": [
     "Programming Languages"
   ],
+  "main": "client/out/extension.js",
   "contributes": {
     "languages": [
       {
@@ -55,5 +56,23 @@
         }
       }
     ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -b",
+    "watch": "tsc -b -w",
+    "lint": "eslint",
+    "postinstall": "cd client && npm install && cd .."
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@eslint/json": "^1.2.0",
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "@types/node": "^24.12.0",
+    "eslint": "^10.1.0",
+    "globals": "^17.4.0",
+    "jiti": "^2.6.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.57.2"
   }
 }
