@@ -450,13 +450,17 @@
 							]
 						}
 					]
+				},
+				{
+					"include": "#array"
 				}
 			]
 		},
 		"array": {
+			"name": "entity.expression.array.fluid",
 			"patterns": [
 				{
-					"match": "(?<=(^|[\\{,])\\s*)([a-zA-Z0-9_\\-]+)(?=\\s*:)",
+					"match": "(?<=(^|[\\{,])\\s*)((['\"]?)[a-zA-Z0-9_\\-]+\\3)(?=\\s*:)",
 					"captures": {
 						"2": {
 							"name": "entity.other.attribute-name.fluid"
