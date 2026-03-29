@@ -4,6 +4,7 @@
   "description": "VScode extension for Fluid Template Language",
   "license": "MIT",
   "version": "0.0.1",
+  "publisher": "friendsoftypo3.fluid",
   "engines": {
     "vscode": "^1.110.0"
   },
