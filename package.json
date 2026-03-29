@@ -22,8 +22,8 @@
         "configuration": "./language-configuration.json"
       },
       {
-        "id": "fluid-html",
-        "aliases": ["Fluid HTML", "fluid-html"],
+        "id": "html-fluid",
+        "aliases": ["HTML (Fluid)", "html-fluid"],
         "filenamePatterns": [
           "*.fluid.html",
           "**/Resources/Private/**/{Templates,Layouts,Partials,Components}/**/*.html",
@@ -39,9 +39,9 @@
         "path": "./syntaxes/fluid.tmLanguage.json"
       },
       {
-        "language": "fluid-html",
+        "language": "html-fluid",
         "scopeName": "text.html.fluid",
-        "path": "./syntaxes/fluid-html.tmLanguage.json",
+        "path": "./syntaxes/html-fluid.tmLanguage.json",
         "embeddedLanguages": {
           "source.css": "css",
           "source.js": "javascript"

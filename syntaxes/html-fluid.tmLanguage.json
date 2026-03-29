@@ -1,6 +1,6 @@
 {
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-	"name": "Fluid HTML",
+	"name": "HTML (Fluid)",
 	"scopeName": "text.html.fluid",
 	"injections": {
 		"R:text.html.fluid - (comment.block, text.html meta.embedded, meta.tag.*.*.html, meta.tag.*.*.*.html, meta.tag.*.*.*.*.html)": {
