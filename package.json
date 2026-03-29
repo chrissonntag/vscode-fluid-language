@@ -15,7 +15,9 @@
         "id": "fluid",
         "aliases": ["Fluid", "fluid"],
         "filenamePatterns": [
-          "*.fluid.*"
+          "*.fluid.*",
+          "**/Resources/Private/**/{Templates,Layouts,Partials,Components}/**/*.txt",
+          "**/ContentBlocks/**/templates/**/*.txt"
         ],
         "configuration": "./language-configuration.json"
       },
@@ -23,7 +25,9 @@
         "id": "fluid-html",
         "aliases": ["Fluid HTML", "fluid-html"],
         "filenamePatterns": [
-          "*.fluid.html"
+          "*.fluid.html",
+          "**/Resources/Private/**/{Templates,Layouts,Partials,Components}/**/*.html",
+          "**/ContentBlocks/**/templates/**/*.html"
         ],
         "configuration": "./language-configuration.json"
       }
