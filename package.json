@@ -2,6 +2,7 @@
   "name": "vscode-fluid-language",
   "displayName": "Fluid Template Language",
   "description": "VScode extension for Fluid Template Language",
+  "license": "MIT",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.110.0"
@@ -13,7 +14,10 @@
     "languages": [
       {
         "id": "fluid",
-        "aliases": ["Fluid", "fluid"],
+        "aliases": [
+          "Fluid",
+          "fluid"
+        ],
         "filenamePatterns": [
           "*.fluid.*",
           "**/Resources/Private/**/{Templates,Layouts,Partials,Components}/**/*.txt",
@@ -23,7 +27,10 @@
       },
       {
         "id": "html-fluid",
-        "aliases": ["HTML (Fluid)", "html-fluid"],
+        "aliases": [
+          "HTML (Fluid)",
+          "html-fluid"
+        ],
         "filenamePatterns": [
           "*.fluid.html",
           "**/Resources/Private/**/{Templates,Layouts,Partials,Components}/**/*.html",
