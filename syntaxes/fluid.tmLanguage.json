@@ -2,48 +2,12 @@
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
 	"name": "Fluid",
 	"scopeName": "text.fluid",
-	"injections": {
-		"R:text.fluid - (comment.block, text.html meta.embedded, meta.tag.*.*.html, meta.tag.*.*.*.html, meta.tag.*.*.*.*.html)": {
-			"comment": "Uses R: to ensure this matches after any other injections.",
-			"patterns": [
-				{
-					"match": "<",
-					"name": "invalid.illegal.bad-angle-bracket.html"
-				}
-			]
-		},
-		"L:meta.tag - (meta.tag.metadata.cdata, meta.viewhelper)": {
-			"comment": "Allow inline expressions within regular HTML tags",
-			"patterns": [
-				{
-					"include": "#viewhelper-expression"
-				}
-			]
-		},
-		"L:comment.block.html": {
-			"comment": "Allow inline expressions within regular HTML comments",
-			"patterns": [
-				{
-					"include": "#viewhelper-expression"
-				}
-			]
-		}
-	},
 	"patterns": [
 		{
 			"include": "#namespace-inline"
 		},
 		{
-			"include": "text.html.basic#xml-processing"
-		},
-		{
-			"include": "text.html.basic#comment"
-		},
-		{
 			"include": "#comment"
-		},
-		{
-			"include": "text.html.basic#doctype"
 		},
 		{
 			"include": "#cdata"
@@ -55,96 +19,10 @@
 			"include": "#viewhelper-tag"
 		},
 		{
-			"include": "text.html.basic#tags-valid"
-		},
-		{
-			"include": "#viewhelper-expression"
-		},
-		{
-			"include": "text.html.basic#entities"
+			"include": "#expression"
 		}
 	],
 	"repository": {
-		"viewhelper-tag-attribute": {
-			"begin": "([a-zA-Z\\-]+)(?![\\w:-])",
-			"beginCaptures": {
-				"0": {
-					"name": "entity.other.attribute-name.fluid"
-				}
-			},
-			"end": "(?=\\s*+[^=\\s])",
-			"name": "meta.attribute.fluid",
-			"patterns": [
-				{
-					"include": "#viewhelper-tag-attribute-interior"
-				}
-			]
-		},
-		"viewhelper-tag-attribute-interior": {
-			"patterns": [
-				{
-					"begin": "=",
-					"beginCaptures": {
-						"0": {
-							"name": "punctuation.separator.key-value.fluid"
-						}
-					},
-					"end": "(?<=[^\\s=])(?!\\s*=)|(?=/?>)",
-					"patterns": [
-						{
-							"begin": "\"",
-							"beginCaptures": {
-								"0": {
-									"name": "punctuation.definition.string.begin.fluid"
-								}
-							},
-							"end": "\"",
-							"endCaptures": {
-								"0": {
-									"name": "punctuation.definition.string.end.fluid"
-								}
-							},
-							"name": "string.quoted.double.fluid",
-							"patterns": [
-								{
-									"include": "#viewhelper-expression"
-								},
-								{
-									"include": "text.html.basic#entities"
-								}
-							]
-						},
-						{
-							"begin": "'",
-							"beginCaptures": {
-								"0": {
-									"name": "punctuation.definition.string.begin.fluid"
-								}
-							},
-							"end": "'",
-							"endCaptures": {
-								"0": {
-									"name": "punctuation.definition.string.end.fluid"
-								}
-							},
-							"name": "string.quoted.single.fluid",
-							"patterns": [
-								{
-									"include": "#viewhelper-expression"
-								},
-								{
-									"include": "text.html.basic#entities"
-								}
-							]
-						},
-						{
-							"match": "=",
-							"name": "invalid.illegal.unexpected-equals-sign.fluid"
-						}
-					]
-				}
-			]
-		},
 		"cdata": {
 			"begin": "<!\\[CDATA\\[",
 			"beginCaptures": {
@@ -207,57 +85,6 @@
 				}
 			]
 		},
-		"namespace-xmlns": {
-			"begin": "(?i)(<)(html)(?=\\s|/?>)",
-			"beginCaptures": {
-				"1": {
-					"name": "punctuation.definition.tag.begin.html"
-				},
-				"2": {
-					"name": "entity.name.tag.html"
-				}
-			},
-			"end": ">",
-			"endCaptures": {
-				"0": {
-					"name": "punctuation.definition.tag.end.html"
-				}
-			},
-			"name": "meta.tag.structure.$2.start.html",
-			"patterns": [
-				{
-					"begin": "xmlns:[a-zA-Z\\*]+[a-zA-Z0-9\\.\\*]*",
-					"beginCaptures": {
-						"0": {
-							"name": "support.type.fluid"
-						}
-					},
-					"end": "(?=\\s*+[^=\\s])",
-					"patterns": [
-						{
-							"include": "text.html.basic#attribute-interior"
-						}
-					]
-				},
-				{
-					"match": "(data-namespace-typo3-fluid)(=)(\\\"true\\\")",
-					"captures": {
-						"1": {
-							"name": "support.type.fluid"
-						},
-						"2": {
-							"name": "punctuation.separator.key-value.html"
-						},
-						"3": {
-							"name": "string.quoted.double.html"
-						}
-					}
-				},
-				{
-					"include": "text.html.basic#attribute"
-				}
-			]
-		},
 		"viewhelper-tag": {
 			"patterns": [
 				{
@@ -313,7 +140,87 @@
 				}
 			]
 		},
-		"viewhelper-expression": {
+		"viewhelper-tag-attribute": {
+			"begin": "([a-zA-Z\\-]+)(?![\\w:-])",
+			"beginCaptures": {
+				"0": {
+					"name": "entity.other.attribute-name.fluid"
+				}
+			},
+			"end": "(?=\\s*+[^=\\s])",
+			"name": "meta.attribute.fluid",
+			"patterns": [
+				{
+					"include": "#viewhelper-tag-attribute-interior"
+				}
+			]
+		},
+		"viewhelper-tag-attribute-interior": {
+			"patterns": [
+				{
+					"begin": "=",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.separator.key-value.fluid"
+						}
+					},
+					"end": "(?<=[^\\s=])(?!\\s*=)|(?=/?>)",
+					"patterns": [
+						{
+							"begin": "\"",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.definition.string.begin.fluid"
+								}
+							},
+							"end": "\"",
+							"endCaptures": {
+								"0": {
+									"name": "punctuation.definition.string.end.fluid"
+								}
+							},
+							"name": "string.quoted.double.fluid",
+							"patterns": [
+								{
+									"include": "#expression"
+								},
+								{
+									"include": "text.html.basic#entities"
+								}
+							]
+						},
+						{
+							"begin": "'",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.definition.string.begin.fluid"
+								}
+							},
+							"end": "'",
+							"endCaptures": {
+								"0": {
+									"name": "punctuation.definition.string.end.fluid"
+								}
+							},
+							"name": "string.quoted.single.fluid",
+							"patterns": [
+								{
+									"include": "#expression"
+								},
+								{
+									"include": "text.html.basic#entities"
+								}
+							]
+						},
+						{
+							"match": "=",
+							"name": "invalid.illegal.unexpected-equals-sign.fluid"
+						}
+					]
+				}
+			]
+		},
+		"expression": {
 			"name": "entity.expression.fluid",
 			"begin": "\\{",
 			"beginCaptures": {
@@ -424,7 +331,7 @@
 									"name": "string.quoted.double.fluid",
 									"patterns": [
 										{
-											"include": "#viewhelper-expression"
+											"include": "#expression"
 										}
 									]
 								},
@@ -434,7 +341,7 @@
 									"name": "string.quoted.single.fluid",
 									"patterns": [
 										{
-											"include": "#viewhelper-expression"
+											"include": "#expression"
 										}
 									]
 								},

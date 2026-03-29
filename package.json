@@ -10,21 +10,39 @@
     "Programming Languages"
   ],
   "contributes": {
-    "languages": [{
-      "id": "fluid",
-      "aliases": ["Fluid", "fluid"],
-      "filenamePatterns": ["*.fluid.*"],
-      "configuration": "./language-configuration.json"
-    }],
-    "grammars": [{
-      "language": "fluid",
-      "scopeName": "text.fluid",
-      "path": "./syntaxes/fluid.tmLanguage.json",
-      "embeddedLanguages": {
-        "text.html": "html",
-        "source.css": "css",
-        "source.js": "javascript"
+    "languages": [
+      {
+        "id": "fluid",
+        "aliases": ["Fluid", "fluid"],
+        "filenamePatterns": [
+          "*.fluid.*"
+        ],
+        "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "fluid-html",
+        "aliases": ["Fluid HTML", "fluid-html"],
+        "filenamePatterns": [
+          "*.fluid.html"
+        ],
+        "configuration": "./language-configuration.json"
       }
-    }]
+    ],
+    "grammars": [
+      {
+        "language": "fluid",
+        "scopeName": "text.fluid",
+        "path": "./syntaxes/fluid.tmLanguage.json"
+      },
+      {
+        "language": "fluid-html",
+        "scopeName": "text.html.fluid",
+        "path": "./syntaxes/fluid-html.tmLanguage.json",
+        "embeddedLanguages": {
+          "source.css": "css",
+          "source.js": "javascript"
+        }
+      }
+    ]
   }
 }

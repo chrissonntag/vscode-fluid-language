@@ -1,0 +1,120 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Fluid HTML",
+	"scopeName": "text.html.fluid",
+	"injections": {
+		"R:text.html.fluid - (comment.block, text.html meta.embedded, meta.tag.*.*.html, meta.tag.*.*.*.html, meta.tag.*.*.*.*.html)": {
+			"comment": "Uses R: to ensure this matches after any other injections.",
+			"patterns": [
+				{
+					"match": "<",
+					"name": "invalid.illegal.bad-angle-bracket.html"
+				}
+			]
+		},
+		"L:meta.tag - (meta.tag.metadata.cdata, meta.viewhelper)": {
+			"comment": "Allow inline expressions within regular HTML tags",
+			"patterns": [
+				{
+					"include": "text.fluid#expression"
+				}
+			]
+		},
+		"L:comment.block.html": {
+			"comment": "Allow inline expressions within regular HTML comments",
+			"patterns": [
+				{
+					"include": "text.fluid#expression"
+				}
+			]
+		}
+	},
+	"patterns": [
+		{
+			"include": "text.fluid#namespace-inline"
+		},
+		{
+			"include": "text.html.basic#xml-processing"
+		},
+		{
+			"include": "text.html.basic#comment"
+		},
+		{
+			"include": "text.fluid#comment"
+		},
+		{
+			"include": "text.html.basic#doctype"
+		},
+		{
+			"include": "text.fluid#cdata"
+		},
+		{
+			"include": "#namespace-xmlns"
+		},
+		{
+			"include": "text.fluid#viewhelper-tag"
+		},
+		{
+			"include": "text.html.basic#tags-valid"
+		},
+		{
+			"include": "text.fluid#expression"
+		},
+		{
+			"include": "text.html.basic#entities"
+		}
+	],
+	"repository": {
+		"namespace-xmlns": {
+			"begin": "(?i)(<)(html)(?=\\s|/?>)",
+			"beginCaptures": {
+				"1": {
+					"name": "punctuation.definition.tag.begin.html"
+				},
+				"2": {
+					"name": "entity.name.tag.html"
+				}
+			},
+			"end": ">",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.tag.end.html"
+				}
+			},
+			"name": "meta.tag.structure.$2.start.html",
+			"patterns": [
+				{
+					"begin": "xmlns:[a-zA-Z\\*]+[a-zA-Z0-9\\.\\*]*",
+					"beginCaptures": {
+						"0": {
+							"name": "support.type.fluid"
+						}
+					},
+					"end": "(?=\\s*+[^=\\s])",
+					"patterns": [
+						{
+							"include": "text.html.basic#attribute-interior"
+						}
+					]
+				},
+				{
+					"match": "(data-namespace-typo3-fluid)(=)(\\\"true\\\")",
+					"captures": {
+						"1": {
+							"name": "support.type.fluid"
+						},
+						"2": {
+							"name": "punctuation.separator.key-value.html"
+						},
+						"3": {
+							"name": "string.quoted.double.html"
+						}
+					}
+				},
+				{
+					"include": "text.html.basic#attribute"
+				}
+			]
+		}
+	}
+}
