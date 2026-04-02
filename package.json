@@ -25,7 +25,11 @@
           "**/Resources/Private/**/{Templates,Layouts,Partials,Components}/**/*.txt",
           "**/ContentBlocks/**/templates/**/*.txt"
         ],
-        "configuration": "./language-configuration.json"
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "dark": "./icon.svg",
+          "light": "./icon.svg"
+        }
       },
       {
         "id": "html-fluid",
@@ -38,7 +42,11 @@
           "**/Resources/Private/**/{Templates,Layouts,Partials,Components}/**/*.html",
           "**/ContentBlocks/**/templates/**/*.html"
         ],
-        "configuration": "./language-configuration.json"
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "dark": "./icon.svg",
+          "light": "./icon.svg"
+        }
       }
     ],
     "grammars": [
