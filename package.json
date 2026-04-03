@@ -53,10 +53,10 @@
           "**/Resources/Private/**/{Templates,Layouts,Partials,Components}/**/*.txt",
           "**/ContentBlocks/**/templates/**/*.txt"
         ],
-        "configuration": "./language-configuration.json",
+        "configuration": "./languages/fluid-language.json",
         "icon": {
-          "dark": "./icon.svg",
-          "light": "./icon.svg"
+          "dark": "./languages/fluid-file.svg",
+          "light": "./languages/fluid-file.svg"
         }
       },
       {
@@ -70,10 +70,10 @@
           "**/Resources/Private/**/{Templates,Layouts,Partials,Components}/**/*.html",
           "**/ContentBlocks/**/templates/**/*.html"
         ],
-        "configuration": "./language-configuration.json",
+        "configuration": "./languages/fluid-language.json",
         "icon": {
-          "dark": "./icon.svg",
-          "light": "./icon.svg"
+          "dark": "./languages/fluid-file.svg",
+          "light": "./languages/fluid-file.svg"
         }
       }
     ],
