@@ -14,7 +14,7 @@ final class ViewHelperSchemaWriter
     {
         $vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
         $autoloader = require $vendorDir . '/autoload.php';
-        $allViewHelpers = (new ViewHelperFinder())->findViewHelpersInComposerProject($autoloader);
+        $allViewHelpers = (new ViewHelperFinder())->findViewHelpersInComposerProject($autoloader, true);
 
         $groupedByNamespace = [];
         foreach ($allViewHelpers as $viewHelper) {

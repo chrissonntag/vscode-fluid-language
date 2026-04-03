@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bfa221bd1e74dd1d9038b48c65ab9ac6",
+    "content-hash": "1e8dae7f35e7f76f2c5c51ba210852ed",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -6043,16 +6043,16 @@
         },
         {
             "name": "typo3fluid/fluid",
-            "version": "5.2.0",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TYPO3/Fluid.git",
-                "reference": "dce7467c2bfd4c8fea3edbb7983664bdc6f51882"
+                "reference": "a0b26b4cf180c0f774bb826a056187226dc6dced"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TYPO3/Fluid/zipball/dce7467c2bfd4c8fea3edbb7983664bdc6f51882",
-                "reference": "dce7467c2bfd4c8fea3edbb7983664bdc6f51882",
+                "url": "https://api.github.com/repos/TYPO3/Fluid/zipball/a0b26b4cf180c0f774bb826a056187226dc6dced",
+                "reference": "a0b26b4cf180c0f774bb826a056187226dc6dced",
                 "shasum": ""
             },
             "require": {
@@ -6073,6 +6073,7 @@
                 "ext-json": "PHP JSON is needed when using JSONVariableProvider: A relatively rare use case",
                 "ext-simplexml": "SimpleXML is required for the XSD schema generator"
             },
+            "default-branch": true,
             "bin": [
                 "bin/fluid"
             ],
@@ -6098,7 +6099,7 @@
                 "issues": "https://github.com/TYPO3/Fluid/issues",
                 "source": "https://github.com/TYPO3/Fluid"
             },
-            "time": "2026-03-11T11:10:11+00:00"
+            "time": "2026-04-03T19:24:09+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -7431,9 +7432,18 @@
             "time": "2025-06-24T13:30:11+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "typo3fluid/fluid",
+            "version": "dev-main",
+            "alias": "5.3.0",
+            "alias_normalized": "5.3.0.0"
+        }
+    ],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "typo3fluid/fluid": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {},

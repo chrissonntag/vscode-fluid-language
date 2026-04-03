@@ -47,19 +47,20 @@ final class HtmlCustomDataGenerator
             $documentation = $metadata->documentation;
             // Add deprecation information to ViewHelper documentation
             if (isset($metadata->docTags['@deprecated'])) {
-                $documentation .= "\n@deprecated " . $metadata->docTags['@deprecated'];
+                $documentation .= "\n\n**@deprecated " . implode(' ', $metadata->docTags['@deprecated']) . '**';
             }
             // If @see is a link, it can be added as proper reference
             if (isset($metadata->docTags['@see'])) {
-                if (str_starts_with($metadata->docTags['@see'], 'https://docs.typo3.org/')) {
-                    $tag['references'] = [
-                        [
-                            'name' => 'ViewHelper Reference',
-                            'url' => $metadata->docTags['@see']
-                        ],
-                    ];
-                } else {
-                    $documentation .= "\n@see " . $metadata->docTags['@see'];
+                foreach ($metadata->docTags['@see'] as $see) {
+                    if (str_starts_with($see, 'https://')) {
+                        $tag['references'] ??= [];
+                        $tag['references'][] = [
+                            'name' => $see,
+                            'url' => $see
+                        ];
+                    } else {
+                        $documentation .= "\n@see " . $see;
+                    }
                 }
             }
             $documentation = trim($documentation);
