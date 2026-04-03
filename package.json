@@ -34,6 +34,13 @@
         "autoInsert": true
       }
     ],
+    "html": {
+      "customData": [
+        "./fluid/out/schema_TYPO3_CMS_Fluid_ViewHelpers.json",
+        "./fluid/out/schema_TYPO3_CMS_Form_ViewHelpers.json",
+        "./fluid/out/schema_TYPO3_CMS_Core_ViewHelpers.json"
+      ]
+    },
     "languages": [
       {
         "id": "fluid",

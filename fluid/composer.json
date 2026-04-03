@@ -1,0 +1,35 @@
+{
+    "name": "praetorius/vscode-fluid-language",
+    "require": {
+        "typo3fluid/fluid": "^5",
+        "typo3/cms-fluid": "^14",
+        "typo3/cms-core": "^14",
+        "typo3/cms-frontend": "^14",
+        "typo3/cms-backend": "^14",
+        "typo3/cms-form": "^14"
+    },
+    "scripts": {
+        "generate": "Praetorius\\VscodeFluidLanguage\\ViewHelperSchemaWriter::discoverAndWrite"
+    },
+    "autoload": {
+        "psr-4": {
+            "\\Praetorius\\VscodeFluidLanguage\\": "./src"
+        }
+    },
+    "config": {
+		"vendor-dir": ".Build/vendor",
+		"bin-dir": ".Build/bin",
+        "allow-plugins": {
+            "typo3/class-alias-loader": true,
+            "typo3/cms-composer-installers": true
+        }
+    },
+    "extra": {
+		"typo3/cms": {
+			"web-dir": ".Build/web"
+        }
+    },
+    "require-dev": {
+        "composer/composer": "^2.9"
+    }
+}

@@ -2,3 +2,6 @@ node_modules/
 tsconfig.tsbuildinfo
 client/out/
 server/out/
+fluid/.Build/
+fluid/var/
+fluid/out/*.json
