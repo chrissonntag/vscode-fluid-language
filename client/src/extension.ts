@@ -1,10 +1,11 @@
 import { spawnSync } from 'child_process';
 import { hash } from 'crypto';
-import type { CompletionItem, ExtensionContext, ProviderResult, Hover } from 'vscode';
+import type { CompletionItem, ExtensionContext, ProviderResult, Hover, TextDocument, LocationLink, Definition, DiagnosticCollection, Uri } from 'vscode';
 import * as vscode from 'vscode';
 
-let diagnosticCollection: vscode.DiagnosticCollection;
 let fluidBinary;
+let diagnosticCollection: DiagnosticCollection;
+const virtualDocumentContents = new Map<string, string>();
 
 export function activate(ctx: ExtensionContext) {
 	fluidBinary = vscode.workspace.getConfiguration('fluid').get('fluidBinary');
@@ -27,9 +28,7 @@ export function activate(ctx: ExtensionContext) {
 		console.log('Skipping file validation because Fluid CLI path is not set in configuration.');
 	}
 
-	const virtualDocumentContents = new Map<string, string>();
-
-	vscode.workspace.registerTextDocumentContentProvider('embedded-content', {
+	vscode.workspace.registerTextDocumentContentProvider('fluid-embedded-content', {
 		provideTextDocumentContent: uri => {
 			const decodedUri = decodeURIComponent(uri.path.slice(1));
 			return virtualDocumentContents.get(decodedUri);
@@ -38,13 +37,9 @@ export function activate(ctx: ExtensionContext) {
 
 	vscode.languages.registerHoverProvider('html-fluid', {
 		async provideHover(document, position, token) {
-			const embeddedContentIdentifier = hash('sha256', document.uri.toString(true)) + '.html';
-			virtualDocumentContents.set(embeddedContentIdentifier, document.getText());
-			const vdocUriString = `embedded-content://html/${encodeURIComponent(embeddedContentIdentifier)}`;
-			const vdocUri = vscode.Uri.parse(vdocUriString);
 			const result = await vscode.commands.executeCommand<Hover[]>(
 				'vscode.executeHoverProvider',
-				vdocUri,
+				createVirtualHtmlDocument(document),
 				position,
 			);
 			return Promise.resolve(result[0]) as ProviderResult<Hover>;
@@ -53,13 +48,9 @@ export function activate(ctx: ExtensionContext) {
 
 	vscode.languages.registerCompletionItemProvider('html-fluid', {
 		async provideCompletionItems(document, position, token, context) {
-			const embeddedContentIdentifier = hash('sha256', document.uri.toString(true)) + '.html';
-			virtualDocumentContents.set(embeddedContentIdentifier, document.getText());
-			const vdocUriString = `embedded-content://html/${encodeURIComponent(embeddedContentIdentifier)}`;
-			const vdocUri = vscode.Uri.parse(vdocUriString);
 			return await vscode.commands.executeCommand<CompletionItem[]>(
 				'vscode.executeCompletionItemProvider',
-				vdocUri,
+				createVirtualHtmlDocument(document),
 				position,
 				context.triggerCharacter
 			);
@@ -67,7 +58,13 @@ export function activate(ctx: ExtensionContext) {
 	});
 }
 
-function updateDiagnostics(document: vscode.TextDocument, collection: vscode.DiagnosticCollection): void {
+function createVirtualHtmlDocument(document: TextDocument): Uri {
+	const embeddedContentIdentifier = hash('sha256', document.uri.toString(true)) + '.html';
+	virtualDocumentContents.set(embeddedContentIdentifier, document.getText());
+	return vscode.Uri.parse(`fluid-embedded-content://html/${encodeURIComponent(embeddedContentIdentifier)}`);
+}
+
+function updateDiagnostics(document: TextDocument, collection: DiagnosticCollection): void {
 	if (fluidBinary === '') {
 		return;
 	}
