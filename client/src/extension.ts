@@ -1,11 +1,9 @@
 import { spawnSync } from 'child_process';
-import { hash } from 'crypto';
-import type { CompletionItem, ExtensionContext, ProviderResult, Hover, TextDocument, LocationLink, Definition, DiagnosticCollection, Uri } from 'vscode';
+import type { ExtensionContext, TextDocument, DiagnosticCollection } from 'vscode';
 import * as vscode from 'vscode';
 
 let fluidBinary;
 let diagnosticCollection: DiagnosticCollection;
-const virtualDocumentContents = new Map<string, string>();
 
 export function activate(ctx: ExtensionContext) {
 	fluidBinary = vscode.workspace.getConfiguration('fluid').get('fluidBinary');
@@ -27,41 +25,6 @@ export function activate(ctx: ExtensionContext) {
 	} else {
 		console.log('Skipping file validation because Fluid CLI path is not set in configuration.');
 	}
-
-	vscode.workspace.registerTextDocumentContentProvider('fluid-embedded-content', {
-		provideTextDocumentContent: uri => {
-			const decodedUri = decodeURIComponent(uri.path.slice(1));
-			return virtualDocumentContents.get(decodedUri);
-		}
-	});
-
-	vscode.languages.registerHoverProvider('html-fluid', {
-		async provideHover(document, position, token) {
-			const result = await vscode.commands.executeCommand<Hover[]>(
-				'vscode.executeHoverProvider',
-				createVirtualHtmlDocument(document),
-				position,
-			);
-			return Promise.resolve(result[0]) as ProviderResult<Hover>;
-		}
-	});
-
-	vscode.languages.registerCompletionItemProvider('html-fluid', {
-		async provideCompletionItems(document, position, token, context) {
-			return await vscode.commands.executeCommand<CompletionItem[]>(
-				'vscode.executeCompletionItemProvider',
-				createVirtualHtmlDocument(document),
-				position,
-				context.triggerCharacter
-			);
-		},
-	});
-}
-
-function createVirtualHtmlDocument(document: TextDocument): Uri {
-	const embeddedContentIdentifier = hash('sha256', document.uri.toString(true)) + '.html';
-	virtualDocumentContents.set(embeddedContentIdentifier, document.getText());
-	return vscode.Uri.parse(`fluid-embedded-content://html/${encodeURIComponent(embeddedContentIdentifier)}`);
 }
 
 function updateDiagnostics(document: TextDocument, collection: DiagnosticCollection): void {

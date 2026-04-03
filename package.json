@@ -12,6 +12,10 @@
     "Programming Languages"
   ],
   "main": "client/out/extension.js",
+  "extensionDependencies": [
+    "vscode.html",
+    "vscode.html-language-features"
+  ],
   "contributes": {
     "configuration": {
       "title": "Fluid Template Language",
@@ -24,6 +28,12 @@
         }
       }
     },
+    "htmlLanguageParticipants": [
+      {
+        "languageId": "html-fluid",
+        "autoInsert": true
+      }
+    ],
     "languages": [
       {
         "id": "fluid",
