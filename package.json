@@ -9,7 +9,9 @@
     "vscode": "^1.110.0"
   },
   "categories": [
-    "Programming Languages"
+    "Programming Languages",
+    "Snippets",
+    "Linters"
   ],
   "main": "client/out/extension.js",
   "extensionDependencies": [
@@ -91,6 +93,16 @@
           "source.css": "css",
           "source.js": "javascript"
         }
+      }
+    ],
+    "snippets": [
+      {
+        "language": "fluid",
+        "path": "./snippets/fluid-snippets.json"
+      },
+      {
+        "language": "html-fluid",
+        "path": "./snippets/fluid-snippets.json"
       }
     ]
   },
