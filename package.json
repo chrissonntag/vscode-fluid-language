@@ -13,6 +13,17 @@
   ],
   "main": "client/out/extension.js",
   "contributes": {
+    "configuration": {
+      "title": "Fluid Template Language",
+      "type": "object",
+      "properties": {
+        "fluid.fluidBinary": {
+          "type": "string",
+          "default": "",
+          "description": "Path to Fluid binary (e. g. vendor/bin/fluid)"
+        }
+      }
+    },
     "languages": [
       {
         "id": "fluid",
