@@ -3,15 +3,6 @@
 	"name": "HTML (Fluid)",
 	"scopeName": "text.html.fluid",
 	"injections": {
-		"R:text.html.fluid - (comment.block, text.html meta.embedded, meta.tag.*.*.html, meta.tag.*.*.*.html, meta.tag.*.*.*.*.html)": {
-			"comment": "Uses R: to ensure this matches after any other injections.",
-			"patterns": [
-				{
-					"match": "<",
-					"name": "invalid.illegal.bad-angle-bracket.html"
-				}
-			]
-		},
 		"L:meta.tag - (meta.tag.metadata.cdata, meta.viewhelper)": {
 			"comment": "Allow inline expressions within regular HTML tags",
 			"patterns": [
