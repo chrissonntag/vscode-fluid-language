@@ -1,126 +1,126 @@
 {
-	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-	"name": "HTML (Fluid)",
-	"scopeName": "text.html.fluid",
-	"injections": {
-		"L:meta.tag - (meta.tag.metadata.cdata, meta.viewhelper)": {
-			"comment": "Allow inline expressions within regular HTML tags",
-			"patterns": [
-				{
-					"include": "text.fluid#expression"
-				}
-			]
-		}
-	},
-	"patterns": [
-		{
-			"include": "text.fluid#namespace-inline"
-		},
-		{
-			"include": "text.html.basic#xml-processing"
-		},
-		{
-			"include": "text.html.basic#comment"
-		},
-		{
-			"include": "text.fluid#comment"
-		},
-		{
-			"include": "text.html.basic#doctype"
-		},
-		{
-			"include": "text.fluid#cdata"
-		},
-		{
-			"include": "#namespace-xmlns"
-		},
-		{
-			"include": "text.fluid#viewhelper-tag"
-		},
-		{
-			"include": "text.html.basic#tags-valid"
-		},
-		{
-			"include": "text.fluid#expression"
-		},
-		{
-			"include": "text.html.basic#entities"
-		},
-		{
-			"begin": "(</?)(\\w[^\\s<>]*)(?<!/)",
-			"beginCaptures": {
-				"1": {
-					"name": "punctuation.definition.tag.begin.html"
-				},
-				"2": {
-					"name": "entity.name.tag.html"
-				}
-			},
-			"end": "((?: ?/)?>)",
-			"endCaptures": {
-				"1": {
-					"name": "punctuation.definition.tag.end.html"
-				}
-			},
-			"name": "meta.tag.other.unrecognized.html.derivative",
-			"patterns": [
-				{
-					"include": "text.html.basic#attribute"
-				}
-			]
-		}
-	],
-	"repository": {
-		"namespace-xmlns": {
-			"begin": "(?i)(<)(html)(?=\\s|/?>)",
-			"beginCaptures": {
-				"1": {
-					"name": "punctuation.definition.tag.begin.html"
-				},
-				"2": {
-					"name": "entity.name.tag.html"
-				}
-			},
-			"end": ">",
-			"endCaptures": {
-				"0": {
-					"name": "punctuation.definition.tag.end.html"
-				}
-			},
-			"name": "meta.tag.structure.$2.start.html",
-			"patterns": [
-				{
-					"begin": "xmlns:[a-zA-Z\\*]+[a-zA-Z0-9\\.\\*]*",
-					"beginCaptures": {
-						"0": {
-							"name": "support.type.fluid"
-						}
-					},
-					"end": "(?=\\s*+[^=\\s])",
-					"patterns": [
-						{
-							"include": "text.html.basic#attribute-interior"
-						}
-					]
-				},
-				{
-					"match": "(data-namespace-typo3-fluid)(=)(\\\"true\\\")",
-					"captures": {
-						"1": {
-							"name": "support.type.fluid"
-						},
-						"2": {
-							"name": "punctuation.separator.key-value.html"
-						},
-						"3": {
-							"name": "string.quoted.double.html"
-						}
-					}
-				},
-				{
-					"include": "text.html.basic#attribute"
-				}
-			]
-		}
-	}
+    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "name": "HTML (Fluid)",
+    "scopeName": "text.html.fluid",
+    "injections": {
+        "L:meta.tag - (meta.tag.metadata.cdata, meta.viewhelper)": {
+            "comment": "Allow inline expressions within regular HTML tags",
+            "patterns": [
+                {
+                    "include": "text.fluid#expression"
+                }
+            ]
+        }
+    },
+    "patterns": [
+        {
+            "include": "text.fluid#namespace-inline"
+        },
+        {
+            "include": "text.html.basic#xml-processing"
+        },
+        {
+            "include": "text.html.basic#comment"
+        },
+        {
+            "include": "text.fluid#comment"
+        },
+        {
+            "include": "text.html.basic#doctype"
+        },
+        {
+            "include": "text.fluid#cdata"
+        },
+        {
+            "include": "#namespace-xmlns"
+        },
+        {
+            "include": "text.fluid#viewhelper-tag"
+        },
+        {
+            "include": "text.html.basic#tags-valid"
+        },
+        {
+            "include": "text.fluid#expression"
+        },
+        {
+            "include": "text.html.basic#entities"
+        },
+        {
+            "begin": "(</?)(\\w[^\\s<>]*)(?<!/)",
+            "beginCaptures": {
+                "1": {
+                    "name": "punctuation.definition.tag.begin.html"
+                },
+                "2": {
+                    "name": "entity.name.tag.html"
+                }
+            },
+            "end": "((?: ?/)?>)",
+            "endCaptures": {
+                "1": {
+                    "name": "punctuation.definition.tag.end.html"
+                }
+            },
+            "name": "meta.tag.other.unrecognized.html.derivative",
+            "patterns": [
+                {
+                    "include": "text.html.basic#attribute"
+                }
+            ]
+        }
+    ],
+    "repository": {
+        "namespace-xmlns": {
+            "begin": "(?i)(<)(html)(?=\\s|/?>)",
+            "beginCaptures": {
+                "1": {
+                    "name": "punctuation.definition.tag.begin.html"
+                },
+                "2": {
+                    "name": "entity.name.tag.html"
+                }
+            },
+            "end": ">",
+            "endCaptures": {
+                "0": {
+                    "name": "punctuation.definition.tag.end.html"
+                }
+            },
+            "name": "meta.tag.structure.$2.start.html",
+            "patterns": [
+                {
+                    "begin": "xmlns:[a-zA-Z\\*]+[a-zA-Z0-9\\.\\*]*",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "support.type.fluid"
+                        }
+                    },
+                    "end": "(?=\\s*+[^=\\s])",
+                    "patterns": [
+                        {
+                            "include": "text.html.basic#attribute-interior"
+                        }
+                    ]
+                },
+                {
+                    "match": "(data-namespace-typo3-fluid)(=)(\\\"true\\\")",
+                    "captures": {
+                        "1": {
+                            "name": "support.type.fluid"
+                        },
+                        "2": {
+                            "name": "punctuation.separator.key-value.html"
+                        },
+                        "3": {
+                            "name": "string.quoted.double.html"
+                        }
+                    }
+                },
+                {
+                    "include": "text.html.basic#attribute"
+                }
+            ]
+        }
+    }
 }
