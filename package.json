@@ -23,10 +23,15 @@
       "title": "Fluid Template Language",
       "type": "object",
       "properties": {
-        "fluid.fluidBinary": {
+        "fluid.bin.fluid": {
           "type": "string",
           "default": "",
           "description": "Path to Fluid binary (e. g. vendor/bin/fluid)"
+        },
+        "fluid.bin.typo3": {
+          "type": "string",
+          "default": "",
+          "description": "Path to TYPO3 binary (e. g. vendor/bin/typo3)"
         }
       }
     },
@@ -101,8 +106,16 @@
         "path": "./snippets/fluid-snippets.json"
       },
       {
+        "language": "fluid",
+        "path": "./snippets/fluid-typo3-snippets.json"
+      },
+      {
         "language": "html-fluid",
         "path": "./snippets/fluid-snippets.json"
+      },
+      {
+        "language": "html-fluid",
+        "path": "./snippets/fluid-typo3-snippets.json"
       }
     ]
   },

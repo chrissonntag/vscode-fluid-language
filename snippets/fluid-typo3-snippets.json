@@ -1,0 +1,42 @@
+{
+  "translate": {
+    "prefix": ["f:translate", "f:trans", "ftrans"],
+    "body": ["<f:translate key=\"${1:key}\" />"]
+  },
+  "translate (inline syntax)": {
+    "prefix": ["f:transinline", "ftransinline"],
+    "body": ["{f:translate(key: '${1:key}')}"]
+  },
+  "image": {
+    "prefix": ["f:image", "fimage"],
+    "body": ["<f:image image=\"{${1:image}}\" width=\"${2:200}\" />"]
+  },
+  "resource URI (inline syntax)": {
+    "prefix": ["f:uri.resource", "f:resourceuri", "fresourceuri"],
+    "body": ["{f:uri.resource(path: '${1:logo.svg}', extensionName: '${2:extension}')}"]
+  },
+  "CSS asset": {
+    "prefix": ["f:asset.css", "f:cssasset", "fcssasset"],
+    "body": ["<f:asset.css identifier=\"${1:identifier}\" href=\"${2:path}\" />"]
+  },
+  "JavaScript asset": {
+    "prefix": ["f:asset.script", "f:javascriptasset", "fjavascriptasset"],
+    "body": ["<f:asset.script identifier=\"${1:identifier}\" src=\"${2:path}\" />"]
+  },
+  "render content area": {
+    "prefix": ["f:render.contentarea", "f:rendercontentarea", "frendercontentarea"],
+    "body": ["<f:render.contentArea contentArea=\"{${1:content.main}}\" />"]
+  },
+  "render record": {
+    "prefix": ["f:render.record", "f:renderrecord", "frenderrecord"],
+    "body": ["<f:render.record record=\"{${1:record}}\" />"]
+  },
+  "render text": {
+    "prefix": ["f:render.text", "f:rendertext", "frendertext"],
+    "body": ["<f:render.text record=\"{${1:record}}\" field=\"${2:bodytext}\" />"]
+  },
+  "TypoScript content object (cObj)": {
+    "prefix": ["f:cObj", "f:typoscriptcontentobject", "ftyposcriptcontentobject"],
+    "body": ["<f:cObj.text typoscriptObjectPath=\"${1:lib.myLib}\" />"]
+  }
+}
