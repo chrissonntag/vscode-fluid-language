@@ -19,14 +19,6 @@
 					"include": "text.fluid#expression"
 				}
 			]
-		},
-		"L:comment.block.html": {
-			"comment": "Allow inline expressions within regular HTML comments",
-			"patterns": [
-				{
-					"include": "text.fluid#expression"
-				}
-			]
 		}
 	},
 	"patterns": [
