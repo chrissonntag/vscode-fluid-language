@@ -2,11 +2,18 @@ import { spawnSync } from 'child_process';
 import type { ExtensionContext, TextDocument, DiagnosticCollection } from 'vscode';
 import * as vscode from 'vscode';
 
-let fluidBinary;
+let fluidBinary, typo3Binary;
 let diagnosticCollection: DiagnosticCollection;
 
 export function activate(ctx: ExtensionContext) {
-	fluidBinary = vscode.workspace.getConfiguration('fluid').get('fluidBinary');
+	setupFluidBinary(vscode.workspace.getConfiguration('fluid.bin').get('fluid'));
+	setupTypo3Binary(vscode.workspace.getConfiguration('fluid.bin').get('typo3'));
+	ctx.subscriptions.push(vscode.workspace.onDidChangeConfiguration(e => {
+		if (e.affectsConfiguration('fluid.bin')) {
+			setupFluidBinary(vscode.workspace.getConfiguration('fluid.bin').get('fluid'));
+			setupTypo3Binary(vscode.workspace.getConfiguration('fluid.bin').get('typo3'));
+		}
+	}));
 
 	if (fluidBinary !== '') {
 		diagnosticCollection = vscode.languages.createDiagnosticCollection('fluid');
@@ -27,6 +34,22 @@ export function activate(ctx: ExtensionContext) {
 	}
 }
 
+function setupFluidBinary(userInput: string): void {
+	fluidBinary = '';
+	if (userInput !== '') {
+		// TODO verify that the required commands are available
+		fluidBinary = userInput;
+	}
+}
+
+function setupTypo3Binary(userInput: string): void {
+	typo3Binary = '';
+	if (userInput !== '') {
+		// TODO verify that the required commands are available
+		typo3Binary = userInput;
+	}
+}
+
 function updateDiagnostics(document: TextDocument, collection: DiagnosticCollection): void {
 	if (fluidBinary === '') {
 		return;
@@ -34,10 +57,11 @@ function updateDiagnostics(document: TextDocument, collection: DiagnosticCollect
 	if (document.languageId !== 'fluid' && document.languageId !== 'html-fluid') {
 		return;
 	}
+	const workspacePath = vscode.workspace.getWorkspaceFolder(document.uri).uri.fsPath + '/';
 	const diagnostics = [];
 	let result;
 	try {
-		const fluidCli = spawnSync(vscode.workspace.getWorkspaceFolder(document.uri).uri.fsPath + "/" + fluidBinary, ['analyze'], { input: document.getText() });
+		const fluidCli = spawnSync(workspacePath + fluidBinary, ['analyze', '--json', '--stdin'], { input: document.getText() });
 		result = JSON.parse(fluidCli.stdout.toString());
 	} catch (err) {
 		console.error(err);
