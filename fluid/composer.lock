@@ -6047,12 +6047,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TYPO3/Fluid.git",
-                "reference": "a0b26b4cf180c0f774bb826a056187226dc6dced"
+                "reference": "951d00e823b476494fb479b08deab0313e3e9567"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TYPO3/Fluid/zipball/a0b26b4cf180c0f774bb826a056187226dc6dced",
-                "reference": "a0b26b4cf180c0f774bb826a056187226dc6dced",
+                "url": "https://api.github.com/repos/TYPO3/Fluid/zipball/951d00e823b476494fb479b08deab0313e3e9567",
+                "reference": "951d00e823b476494fb479b08deab0313e3e9567",
                 "shasum": ""
             },
             "require": {
@@ -6099,7 +6099,7 @@
                 "issues": "https://github.com/TYPO3/Fluid/issues",
                 "source": "https://github.com/TYPO3/Fluid"
             },
-            "time": "2026-04-03T19:24:09+00:00"
+            "time": "2026-04-04T10:48:38+00:00"
         },
         {
             "name": "webmozart/assert",
