@@ -57,7 +57,7 @@
         ],
         "filenamePatterns": [
           "*.fluid.*",
-          "**/Resources/Private/**/{Templates,Layouts,Partials,Components}/**/*.txt",
+          "**/Resources/Private/**/{Templates,Layouts,Partials,Components,PageView}/**/*.txt",
           "**/ContentBlocks/**/templates/**/*.txt"
         ],
         "configuration": "./languages/fluid-language.json",
@@ -74,7 +74,7 @@
         ],
         "filenamePatterns": [
           "*.fluid.html",
-          "**/Resources/Private/**/{Templates,Layouts,Partials,Components}/**/*.html",
+          "**/Resources/Private/**/{Templates,Layouts,Partials,Components,PageView}/**/*.html",
           "**/ContentBlocks/**/templates/**/*.html"
         ],
         "configuration": "./languages/fluid-language.json",
