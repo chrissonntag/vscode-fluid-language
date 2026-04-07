@@ -360,6 +360,14 @@
                 },
                 {
                     "include": "#array"
+                },
+                {
+                    "match": "(\\s*[-\\^+%/*]\\s*[_a-zA-Z0-9\\.]+)+",
+                    "captures": {
+                        "1": {
+                            "name": "keyword.operator.fluid"
+                        }
+                    }
                 }
             ]
         },
