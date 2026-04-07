@@ -120,7 +120,7 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "npm run compile && test -f ./fluid/out/schema_TYPO3_CMS_Fluid_ViewHelpers.json",
     "compile": "tsc -b",
     "watch": "tsc -b -w",
     "lint": "eslint",

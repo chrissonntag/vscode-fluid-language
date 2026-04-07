@@ -36,8 +36,8 @@ final class ViewHelperSchemaWriter
         }
 
         // Generate customData for Fluid Standalone
-        $customData = (new HtmlCustomDataGenerator())->generate('f', $groupedByNamespace['http://typo3.org/ns/TYPO3Fluid/Fluid/ViewHelpers']);
-        file_put_contents(__DIR__ . '/../out/schema_TYPO3Fluid_Fluid_ViewHelpers.json', json_encode($customData));
+        // $customData = (new HtmlCustomDataGenerator())->generate('f', $groupedByNamespace['http://typo3.org/ns/TYPO3Fluid/Fluid/ViewHelpers']);
+        // file_put_contents(__DIR__ . '/../out/schema_TYPO3Fluid_Fluid_ViewHelpers.json', json_encode($customData));
 
         // Generate customData for TYPO3's EXT:fluid
         $customData = (new HtmlCustomDataGenerator())->generate('f', array_replace(

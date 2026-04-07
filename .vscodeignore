@@ -1,5 +1,11 @@
 .vscode/**
 .vscode-test/**
+.github/**
 .gitignore
 fluid/**
 !fluid/out/*.json
+tests/**
+client/**
+!client/out/**
+eslint.config.mts
+tsconfig.json
