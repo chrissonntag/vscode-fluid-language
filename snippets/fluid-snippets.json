@@ -33,7 +33,7 @@
     },
     "layout": {
         "prefix": ["f:layout", "flayout"],
-        "body": ["<f:layout name=\"${1:Default}\" />", "$0"]
+        "body": ["<f:layout name=\"${1:Default}\" />"]
     },
     "alias": {
         "prefix": ["f:alias", "falias"],
@@ -45,11 +45,11 @@
     },
     "argument definition": {
         "prefix": ["f:arg", "farg"],
-        "body": ["<f:argument name=\"${1:name}\" type=\"${2:string}\" />", "$0"]
+        "body": ["<f:argument name=\"${1:name}\" type=\"${2:string}\" />"]
     },
     "variable definition": {
         "prefix": ["f:var", "fvar"],
-        "body": ["<f:variable name=\"${1:name}\" value=\"${2:value}\" />", "$0"]
+        "body": ["<f:variable name=\"${1:name}\" value=\"${2:value}\" />"]
     },
     "fragment definition": {
         "prefix": ["f:fragment", "ffragment"],
