@@ -1,26 +1,41 @@
 {
   "name": "vscode-fluid-language",
-  "displayName": "Fluid Template Language",
-  "description": "VScode extension for Fluid Template Language",
+  "displayName": "Fluid Templating Language",
+  "description": "VSCode Extension for Fluid Templating Language",
   "license": "MIT",
   "version": "0.0.1",
   "publisher": "praetorius",
-  "engines": {
-    "vscode": "^1.110.0"
+  "icon": "extension.png",
+  "galleryBanner": {
+    "color": "#ff870",
+    "theme": "light"
   },
+  "bugs": {
+    "url": "https://github.com/s2b/vscode-fluid-language/issues",
+    "email": "sean@contoso.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/s2b/vscode-fluid-language.git"
+  },
+  "homepage": "https://github.com/s2b/vscode-fluid-language/blob/main/README.md",
+  "pricing": "Free",
   "categories": [
     "Programming Languages",
     "Snippets",
     "Linters"
   ],
   "main": "client/out/extension.js",
+  "engines": {
+    "vscode": "^1.110.0"
+  },
   "extensionDependencies": [
     "vscode.html",
     "vscode.html-language-features"
   ],
   "contributes": {
     "configuration": {
-      "title": "Fluid Template Language",
+      "title": "Fluid Templating Language",
       "type": "object",
       "properties": {
         "fluid.bin.fluid": {
@@ -52,6 +67,7 @@
       {
         "id": "fluid",
         "aliases": [
+          "Fluid (Text)",
           "Fluid",
           "fluid"
         ],
@@ -69,7 +85,7 @@
       {
         "id": "html-fluid",
         "aliases": [
-          "HTML (Fluid)",
+          "Fluid (HTML)",
           "html-fluid"
         ],
         "filenamePatterns": [
