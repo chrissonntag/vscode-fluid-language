@@ -107,9 +107,9 @@ you also need `php` and `composer`.
 
 * clone the project
 * run `npm i`
-* run `npm run compile` or `npm run lint` to transpile TypeScript into JavaScript
+* run `npm run build` or `npm run watch` to transpile TypeScript into JavaScript
 * run `npm run lint` to lint your code locally (is also performed in GitHub Actions)
-* run `npm run package` to create a `VSIX` file, which can be installed manually in
+* run `npm run vscode-package` to create a `VSIX` file, which can be installed manually in
   VSCode
 
 For bigger changes, it is advisable to use the

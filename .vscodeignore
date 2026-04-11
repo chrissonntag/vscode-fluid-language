@@ -2,10 +2,12 @@
 .vscode-test/**
 .github/**
 .gitignore
+node_modules
 fluid/**
 !fluid/out/*.json
 tests/**
-client/**
-!client/out/**
+client/src/**
 eslint.config.mts
+tsdown.config.mts
 tsconfig.json
+LanguageServer.md

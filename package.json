@@ -25,7 +25,7 @@
     "Snippets",
     "Linters"
   ],
-  "main": "client/out/extension.js",
+  "main": "client/out/extension.cjs",
   "engines": {
     "vscode": "^1.110.0"
   },
@@ -150,23 +150,27 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile && test -f ./fluid/out/schema_TYPO3_CMS_Fluid_ViewHelpers.json",
-    "compile": "tsc -b",
-    "watch": "tsc -b -w",
-    "lint": "eslint",
-    "postinstall": "cd client && npm install && cd ..",
-    "package": "vsce package"
+    "vscode:prepublish": "npm run build && test -f ./fluid/out/schema_TYPO3_CMS_Fluid_ViewHelpers.json",
+    "build": "tsdown",
+    "watch": "tsdown -w",
+    "lint": "tsc --noEmit && eslint",
+    "vscode-package": "vsce package"
+  },
+  "dependencies": {
+    "ajv": "^8.18.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@eslint/json": "^1.2.0",
     "@stylistic/eslint-plugin": "^5.10.0",
     "@types/node": "^24.12.0",
+    "@types/vscode": "^1.110.0",
     "@vscode/vsce": "^3.7.1",
     "eslint": "^10.1.0",
     "globals": "^17.4.0",
     "jiti": "^2.6.1",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.57.2"
+    "tsdown": "^0.21.7",
+    "typescript-eslint": "^8.57.2",
+    "typescript": "^5.9.3"
   }
 }

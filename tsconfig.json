@@ -6,20 +6,16 @@
             "ES2022"
         ],
         "outDir": "out",
-        "rootDir": "src",
+        "rootDir": "client/",
         "sourceMap": true,
-        "strict": true
+        "strict": true,
+        "types": ["node", "vscode"]
     },
     "include": [
-        "src"
+        "client/src/"
     ],
     "exclude": [
         "node_modules",
         ".vscode-test"
-    ],
-    "references": [
-        {
-            "path": "./client"
-        }
     ]
 }
