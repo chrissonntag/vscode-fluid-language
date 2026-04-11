@@ -95,7 +95,7 @@ function updateDiagnostics(document: TextDocument, collection: DiagnosticCollect
     }
     const errors = analyzeResult.errors.map(error => {
         // Remove redundant information from parser exception messages
-        const matches = error.message.match(/Fluid parse error in template .*, line [0-9]+ at character [0-9]+. Error: (.*?)(?: Template source chunk:|$)/);
+        const matches = error.message.match(/Fluid parse error in template .+?, line [0-9]+ at character [0-9]+. Error: (.*?)(?: Template source chunk:|$)/s);
         // Extract position information from result if provided
         const position = error.templateLocation
             ? new vscode.Position(Number(error.templateLocation?.line ?? 1) - 1, Number(error.templateLocation?.character ?? 1) - 1)
