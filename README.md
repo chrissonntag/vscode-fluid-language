@@ -16,7 +16,8 @@ It has been tested with:
 
 * [VSCode](https://code.visualstudio.com/)
 * [VSCodium](https://vscodium.com/)
-* <mark>(TODO add more)</mark>.
+* [Cursor](https://cursor.com/)
+* [Windsurf]()
 
 ## Features
 
