@@ -5,6 +5,7 @@ export default defineConfig({
     platform: 'node',
     format: 'cjs',
     outDir: 'client/out/',
+    fixedExtension: false,
     deps: {
         alwaysBundle: ['ajv'],
         neverBundle: ['vscode'],

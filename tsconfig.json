@@ -5,7 +5,7 @@
         "lib": [
             "ES2022"
         ],
-        "outDir": "out",
+        "outDir": "client/out",
         "rootDir": "client/",
         "sourceMap": true,
         "strict": true,
