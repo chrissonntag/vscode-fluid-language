@@ -49,8 +49,9 @@ are executed inside of the web container by default. This can be turned off by d
 `fluid.bin.useDdevIfAvailable` in the extension's configuration.
 
 Custom paths to the binaries can also be specified in the extension's configuration via
-`fluid.bin.typo3` and `fluid.bin.fluid`. Note that these are currently **not** preprocessed,
-so be extra careful.
+`fluid.bin.typo3` and `fluid.bin.fluid`. `${workspaceFolder}` is substituted with the
+path of the current workplace folder. Apart from that, these are currently **not**
+preprocessed, so be extra careful.
 
 Compatibility with older versions of TYPO3 might still be feasible, but this is not
 implemented yet.

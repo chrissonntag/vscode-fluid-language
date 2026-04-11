@@ -38,20 +38,29 @@
       "title": "Fluid Templating Language",
       "type": "object",
       "properties": {
-        "fluid.bin.fluid": {
-          "type": "string",
-          "default": "",
-          "description": "Custom path to Fluid binary (e. g. vendor/bin/fluid). Only necessary if a custom project setup is used."
-        },
-        "fluid.bin.typo3": {
-          "type": "string",
-          "default": "",
-          "description": "Custom path to TYPO3 binary (e. g. vendor/bin/typo3). Only necessary if a custom project setup is used."
+        "fluid.features.liveTemplateAnalysis": {
+          "type": "boolean",
+          "order": 1,
+          "default": true,
+          "description": "Perform live analysis of Fluid templates with available binaries."
         },
         "fluid.bin.useDdevIfAvailable": {
           "type": "boolean",
+          "order": 2,
           "default": true,
-          "description": "Run binaries within DDEV if available"
+          "description": "Run binaries within DDEV if available."
+        },
+        "fluid.bin.typo3": {
+          "type": "string",
+          "order": 3,
+          "default": "",
+          "markdownDescription": "Custom location of TYPO3 binary, only necessary for custom project setups. `${workspaceFolder}` is substituted with the path of the current workplace folder.\n\nExample: `docker compose exec vendor/bin/typo3`."
+        },
+        "fluid.bin.fluid": {
+          "type": "string",
+          "order": 4,
+          "default": "",
+          "markdownDescription": "Custom location of Fluid binary, only necessary for custom project setups. `${workspaceFolder}` is substituted with the path of the current workplace folder.\n\nExample: `docker compose exec vendor/bin/fluid`."
         }
       }
     },

@@ -1,65 +1,43 @@
 import { spawnSync } from 'node:child_process';
-import type { ExtensionContext, TextDocument, DiagnosticCollection } from 'vscode';
-import * as vscode from 'vscode';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import type { ExtensionContext, TextDocument, DiagnosticCollection, WorkspaceConfiguration } from 'vscode';
+import * as vscode from 'vscode';
 import Ajv, { ValidateFunction } from 'ajv';
+import type { ExtensionConfiguration, BinaryCommand, TemplateValidatorResult } from './types';
 
 const ajv = new Ajv();
 
-interface TemplateValidatorResult {
-    identifier: string,
-    path: string,
-    errors: TemplateValidatorResultError[],
-    deprecations: TemplateValidatorResultDeprecation[],
-}
-
-interface TemplateValidatorResultError {
-    file: string,
-    line: number,
-    message: string,
-    templateLocation?: {
-        identifierOrPath: string,
-        line: number,
-        character: number,
+const config: ExtensionConfiguration = {
+    bin: {
+        typo3: '',
+        fluid: '',
+        useDdevIfAvailable: true,
     },
+    features: {
+        liveTemplateAnalysis: true,
+    }
 }
-
-interface TemplateValidatorResultDeprecation {
-    file: string,
-    line: number,
-    message: string
-}
-
-interface BinaryCommand {
-    command: string,
-    args: string[],
-}
-
-const userBinaries = {
-    typo3: '',
-    fluid: '',
-    useDdevIfAvailable: true,
-};
 let binaryPathCache: { [key: string]: BinaryCommand} = {};
 let validateFluidAnalyzeResult: ValidateFunction<TemplateValidatorResult>;
 let diagnosticCollection: DiagnosticCollection;
 
 export async function activate(ctx: ExtensionContext) {
-    validateFluidAnalyzeResult = ajv.compile<TemplateValidatorResult>(JSON.parse(fs.readFileSync(path.join(ctx.extensionPath, 'client', 'fluidAnalyze.schema.json'), 'utf-8')));
+    // Create JSON schema validator
+    const fluidAnalyzeResultSchema = JSON.parse(fs.readFileSync(path.join(ctx.extensionPath, 'client', 'fluidAnalyze.schema.json'), 'utf-8'));
+    validateFluidAnalyzeResult = ajv.compile<TemplateValidatorResult>(fluidAnalyzeResultSchema);
 
-    userBinaries.typo3 = vscode.workspace.getConfiguration('fluid.bin').get('typo3');
-    userBinaries.fluid = vscode.workspace.getConfiguration('fluid.bin').get('fluid');
-    userBinaries.useDdevIfAvailable = vscode.workspace.getConfiguration('fluid.bin').get('useDdevIfAvailable');
+    // Read extension configuration
+    initializeConfiguration(vscode.workspace.getConfiguration('fluid'));
     ctx.subscriptions.push(vscode.workspace.onDidChangeConfiguration(e => {
-        if (e.affectsConfiguration('fluid.bin')) {
-            userBinaries.typo3 = vscode.workspace.getConfiguration('fluid.bin').get('typo3');
-            userBinaries.fluid = vscode.workspace.getConfiguration('fluid.bin').get('fluid');
-            userBinaries.useDdevIfAvailable = vscode.workspace.getConfiguration('fluid.bin').get('useDdevIfAvailable');
+        if (e.affectsConfiguration('fluid')) {
+            initializeConfiguration(vscode.workspace.getConfiguration('fluid'));
+            // Clear runtime cache on configuration changes
             binaryPathCache = {};
         }
     }));
 
+    // Register as diagnostics provider
     diagnosticCollection = vscode.languages.createDiagnosticCollection('fluid');
     ctx.subscriptions.push(diagnosticCollection);
     ctx.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(editor => {
@@ -77,45 +55,100 @@ export async function activate(ctx: ExtensionContext) {
     }
 }
 
-function tryAndVerifyAnalyzeCommand(command: BinaryCommand, input, cwd): TemplateValidatorResult|null {
-    try {
-        const process = spawnSync(command.command, command.args, { input, cwd });
-        const data = JSON.parse(process.stdout.toString());
-        if (validateFluidAnalyzeResult(data)) {
-            return data;
-        }
-    } catch (err) {
-        // console.error(err);
-    }
-    return null;
+function initializeConfiguration(configuration: WorkspaceConfiguration): void {
+    config.bin = configuration.get('bin');
+    config.features = configuration.get('features');
 }
 
-function analyzeTemplate(document: TextDocument): TemplateValidatorResult|null {
+function updateDiagnostics(document: TextDocument, collection: DiagnosticCollection): void {
+    if (!vscode.workspace.isTrusted || !config.features.liveTemplateAnalysis) {
+        return null;
+    }
+    const analyzeResult = analyzeTemplate(document);
+    if (!analyzeResult) {
+        collection.delete(document.uri);
+        if (analyzeResult === false) {
+            vscode.window.showInformationMessage(
+                'Unable to provide live analysis for Fluid templates in this workspace.',
+                { identifier: 'configure', title: 'Configure manually' },
+                { identifier: 'disable', title: 'Disable for workspace' },
+            ).then(userOption => {
+                switch (userOption.identifier) {
+                    case 'configure':
+                        vscode.commands.executeCommand(
+                            'workbench.action.openWorkspaceSettings',
+                            'fluid.bin'
+                        );
+                        break;
+
+                    case 'disable':
+                        vscode.workspace.getConfiguration('fluid.features').update(
+                            'liveTemplateAnalysis',
+                            false,
+                            vscode.ConfigurationTarget.Workspace
+                        );
+                        break;
+                }
+            });
+        }
+        return;
+    }
+    const errors = analyzeResult.errors.map(error => {
+        // Remove redundant information from parser exception messages
+        const matches = error.message.match(/Fluid parse error in template .*, line [0-9]+ at character [0-9]+. Error: (.*?)(?: Template source chunk:|$)/);
+        // Extract position information from result if provided
+        const position = error.templateLocation
+            ? new vscode.Position(Number(error.templateLocation?.line ?? 1) - 1, Number(error.templateLocation?.character ?? 1) - 1)
+            : new vscode.Position(0, 0);
+        return new vscode.Diagnostic(
+            new vscode.Range(position, position),
+            (matches && matches[1]) ? matches[1] : error.message,
+            vscode.DiagnosticSeverity.Error,
+        );
+    });
+    const deprecations = analyzeResult.deprecations.map(deprecation => {
+        // We currently have no template position information for deprecations
+        const position = new vscode.Position(0, 0);
+        return new vscode.Diagnostic(
+            new vscode.Range(position, position),
+            deprecation.message + ' (' + deprecation.file + ' in line ' + deprecation.line + ')',
+            vscode.DiagnosticSeverity.Information,
+        );
+    });
+    collection.set(document.uri, [...errors, ...deprecations]);
+}
+
+function analyzeTemplate(document: TextDocument): TemplateValidatorResult|null|false {
     if (document.uri.scheme !== 'file' || (document.languageId !== 'fluid' && document.languageId !== 'html-fluid')) {
         return null;
     }
-    const workspacePath = vscode.workspace.getWorkspaceFolder(document.uri).uri.fsPath;
-    if (binaryPathCache[workspacePath]) {
-        const data = tryAndVerifyAnalyzeCommand(binaryPathCache[workspacePath], document.getText(), workspacePath);
+    const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri).uri.fsPath;
+
+    // Try to get right binary from runtime cache
+    if (binaryPathCache[workspaceFolder]) {
+        const data = tryAndVerifyAnalyzeCommand(binaryPathCache[workspaceFolder], document.getText(), workspaceFolder);
         if (data) {
             return data;
         }
     }
 
+    // Go through binary alternatives to find the best candidate
     const candidates: BinaryCommand[] = [];
-    const isDdevProject = userBinaries.useDdevIfAvailable ? fs.existsSync(path.join(workspacePath, '.ddev')) : false;
+    const isDdevProject = config.bin.useDdevIfAvailable ? fs.existsSync(path.join(workspaceFolder, '.ddev')) : false;
     const ddev = isDdevProject ? spawnSync('which', ['ddev'], { shell: true }).stdout.toString().trim() : '';
 
-    if (userBinaries.typo3) {
+    if (config.bin.typo3) {
         candidates.push({
-            command: userBinaries.typo3,
+            command: config.bin.typo3.replaceAll('${workspaceFolder}', workspaceFolder),
             args: ['fluid:analyze', '--json', '--stdin'],
+            userDefined: true,
         });
     }
-    if (userBinaries.fluid) {
+    if (config.bin.fluid) {
         candidates.push({
-            command: userBinaries.fluid,
+            command: config.bin.fluid.replaceAll('${workspaceFolder}', workspaceFolder),
             args: ['analyze', '--json', '--stdin'],
+            userDefined: true,
         });
     }
     if (isDdevProject && ddev) {
@@ -126,7 +159,7 @@ function analyzeTemplate(document: TextDocument): TemplateValidatorResult|null {
     }
     for (const typo3Binary of ['vendor/bin/typo3', 'bin/typo3', '.Build/bin/typo3']) {
         candidates.push({
-            command: path.join(workspacePath, typo3Binary),
+            command: path.join(workspaceFolder, typo3Binary),
             args: ['fluid:analyze', '--json', '--stdin'],
         });
     }
@@ -146,43 +179,42 @@ function analyzeTemplate(document: TextDocument): TemplateValidatorResult|null {
         });
     }
 
-    // TODO show error if custom path has been defined but didn't work
-
     for (const candidate of candidates) {
-        const data = tryAndVerifyAnalyzeCommand(candidate, document.getText(), workspacePath);
+        const data = tryAndVerifyAnalyzeCommand(candidate, document.getText(), workspaceFolder);
         if (data) {
-            binaryPathCache[workspacePath] = candidate;
-            console.log('Using "%s" as binary to analyze template.', [candidate.command, ...candidate.args].join(' '));
+            binaryPathCache[workspaceFolder] = candidate;
+            console.log('Using "%s" as binary to analyze templates in "%s".', [candidate.command, ...candidate.args].join(' '), workspaceFolder);
             return data;
         }
     }
-    return null;
+    return false;
 }
 
-
-function updateDiagnostics(document: TextDocument, collection: DiagnosticCollection): void {
-    const analyzeResult = analyzeTemplate(document);
-    if (!analyzeResult) {
-        collection.delete(document.uri);
-        return;
+function tryAndVerifyAnalyzeCommand(command: BinaryCommand, input, cwd): TemplateValidatorResult|null {
+    try {
+        const process = spawnSync(command.command, command.args, { input, cwd });
+        const data = JSON.parse(process.stdout?.toString());
+        if (validateFluidAnalyzeResult(data)) {
+            return data;
+        } else if (command.userDefined) {
+            // Log validation errors for user-defined binaries to help with debugging
+            console.error(
+                'JSON validation failed while executing user-defined fluid binary "%s" in workspace folder "%s": %s',
+                [command.command, ...command.args].join(' '),
+                cwd,
+                validateFluidAnalyzeResult.errors.map(error => error.message).join('. '),
+            );
+        }
+    } catch (error) {
+        // Log errors for user-defined binaries to help with debugging
+        if (command.userDefined) {
+            console.error(
+                'Error while executing user-defined fluid binary "%s" in workspace folder "%s": %s',
+                [command.command, ...command.args].join(' '),
+                cwd,
+                error,
+            );
+        }
     }
-    const diagnostics = [];
-    analyzeResult.errors.forEach(error => {
-        const matches = error.message.match(/Fluid parse error in template .*, line [0-9]+ at character [0-9]+. Error: (.*?)(?: Template source chunk:|$)/);
-        const position = error.templateLocation
-            ? new vscode.Position(Number(error.templateLocation?.line ?? 1) - 1, Number(error.templateLocation?.character ?? 1) - 1)
-            : new vscode.Position(0, 0);
-        const diagnostic = new vscode.Diagnostic(
-            new vscode.Range(position, position),
-            (matches && matches[1]) ? matches[1] : error.message,
-            vscode.DiagnosticSeverity.Error
-        );
-        diagnostics.push(diagnostic);
-    });
-    analyzeResult.deprecations.forEach(deprecation => {
-        const position = new vscode.Position(Number(deprecation.line) - 1, 0);
-        const diagnostic = new vscode.Diagnostic(new vscode.Range(position, position), deprecation.message, vscode.DiagnosticSeverity.Information);
-        diagnostics.push(diagnostic);
-    });
-    collection.set(document.uri, diagnostics);
+    return null;
 }
