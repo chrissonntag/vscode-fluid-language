@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "description": "Schema for Fluid template analysis result",
+  "type": "object",
+  "properties": {
+    "identifier": {
+      "type": "string"
+    },
+    "path": {
+      "type": "string"
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "file",
+          "line",
+          "message"
+        ],
+        "properties": {
+          "file": {
+            "type": "string"
+          },
+          "line": {
+            "type": "number"
+          },
+          "message": {
+            "type": "string"
+          },
+          "templateLocation": {
+            "type": "object",
+            "properties": {
+              "identifierOrPath": {
+                "type": "string"
+              },
+              "line": {
+                "type": "number"
+              },
+              "character": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "identifierOrPath",
+              "line",
+              "character"
+            ]
+          }
+        }
+      }
+    },
+    "deprecations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "file",
+          "line",
+          "message"
+        ],
+        "properties": {
+          "file": {
+            "type": "string"
+          },
+          "line": {
+            "type": "number"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "identifier",
+    "path",
+    "errors",
+    "deprecations"
+  ]
+}

@@ -34,15 +34,23 @@ It has been tested with:
 ### Live Template Analysis
 
 The extension is able to utilize available binaries in your project to provide live
-template analysis for Fluid templates (e. g. syntax errors). This works out-of-the-box for
-Fluid 5.3 (or higher) and TYPO3 14.3 (or higher). The following folders are checked for
-the `fluid` and `typo3` binaries:
+template analysis for Fluid templates, e. g. for detecting syntax errors or deprecations.
+This works out-of-the-box for Fluid 5.3 (or higher) and TYPO3 14.3 (or higher). The
+following folders are checked for the `fluid` and `typo3` binaries:
 
 * `vendor/bin/`
 * `bin/`
 * `.Build/bin/`
 
 `typo3` is preferred over `fluid` if both are available.
+
+If [DDEV](https://ddev.com/) is available and the project has DDEV set up, the binaries
+are executed inside of the web container by default. This can be turned off by disabling
+`fluid.bin.useDdevIfAvailable` in the extension's configuration.
+
+Custom paths to the binaries can also be specified in the extension's configuration via
+`fluid.bin.typo3` and `fluid.bin.fluid`. Note that these are currently **not** preprocessed,
+so be extra careful.
 
 Compatibility with older versions of TYPO3 might still be feasible, but this is not
 implemented yet.

@@ -41,12 +41,17 @@
         "fluid.bin.fluid": {
           "type": "string",
           "default": "",
-          "description": "Path to Fluid binary (e. g. vendor/bin/fluid)"
+          "description": "Custom path to Fluid binary (e. g. vendor/bin/fluid). Only necessary if a custom project setup is used."
         },
         "fluid.bin.typo3": {
           "type": "string",
           "default": "",
-          "description": "Path to TYPO3 binary (e. g. vendor/bin/typo3)"
+          "description": "Custom path to TYPO3 binary (e. g. vendor/bin/typo3). Only necessary if a custom project setup is used."
+        },
+        "fluid.bin.useDdevIfAvailable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Run binaries within DDEV if available"
         }
       }
     },
