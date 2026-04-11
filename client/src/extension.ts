@@ -62,7 +62,7 @@ function initializeConfiguration(configuration: WorkspaceConfiguration): void {
 
 function updateDiagnostics(document: TextDocument, collection: DiagnosticCollection): void {
     if (!vscode.workspace.isTrusted || !config.features.liveTemplateAnalysis) {
-        return null;
+        return;
     }
     const analyzeResult = analyzeTemplate(document);
     if (!analyzeResult) {
@@ -73,7 +73,7 @@ function updateDiagnostics(document: TextDocument, collection: DiagnosticCollect
                 { identifier: 'configure', title: 'Configure manually' },
                 { identifier: 'disable', title: 'Disable for workspace' },
             ).then(userOption => {
-                switch (userOption.identifier) {
+                switch (userOption?.identifier) {
                     case 'configure':
                         vscode.commands.executeCommand(
                             'workbench.action.openWorkspaceSettings',
@@ -122,7 +122,10 @@ function analyzeTemplate(document: TextDocument): TemplateValidatorResult|null|f
     if (document.uri.scheme !== 'file' || (document.languageId !== 'fluid' && document.languageId !== 'html-fluid')) {
         return null;
     }
-    const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri).uri.fsPath;
+    const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri)?.uri.fsPath;
+    if (!workspaceFolder) {
+        return null;
+    }
 
     // Try to get right binary from runtime cache
     if (binaryPathCache[workspaceFolder]) {
@@ -190,13 +193,13 @@ function analyzeTemplate(document: TextDocument): TemplateValidatorResult|null|f
     return false;
 }
 
-function tryAndVerifyAnalyzeCommand(command: BinaryCommand, input, cwd): TemplateValidatorResult|null {
+function tryAndVerifyAnalyzeCommand(command: BinaryCommand, input: string, cwd: string): TemplateValidatorResult|null {
     try {
         const process = spawnSync(command.command, command.args, { input, cwd });
         const data = JSON.parse(process.stdout?.toString());
         if (validateFluidAnalyzeResult(data)) {
             return data;
-        } else if (command.userDefined) {
+        } else if (command.userDefined && validateFluidAnalyzeResult.errors) {
             // Log validation errors for user-defined binaries to help with debugging
             console.error(
                 'JSON validation failed while executing user-defined fluid binary "%s" in workspace folder "%s": %s',
