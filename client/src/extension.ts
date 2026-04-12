@@ -56,8 +56,10 @@ export async function activate(ctx: ExtensionContext) {
 }
 
 function initializeConfiguration(configuration: WorkspaceConfiguration): void {
-    config.bin = configuration.get('bin');
-    config.features = configuration.get('features');
+    config.bin.fluid = configuration.get('bin.fluid') ?? '';
+    config.bin.typo3 = configuration.get('bin.typo3') ?? '';
+    config.bin.useDdevIfAvailable = configuration.get('useDdevIfAvailable') ?? true;
+    config.features.liveTemplateAnalysis = configuration.get('features.liveTemplateAnalysis') ?? true;
 }
 
 function updateDiagnostics(document: TextDocument, collection: DiagnosticCollection): void {
