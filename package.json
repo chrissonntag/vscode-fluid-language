@@ -64,6 +64,11 @@
         }
       }
     },
+    "configurationDefaults": {
+      "emmet.includeLanguages": {
+        "html-fluid": "html"
+      }
+    },
     "htmlLanguageParticipants": [
       {
         "languageId": "html-fluid",
