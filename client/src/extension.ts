@@ -62,7 +62,8 @@ function initializeConfiguration(configuration: WorkspaceConfiguration): void {
     config.features.liveTemplateAnalysis = configuration.get('features.liveTemplateAnalysis') ?? true;
 }
 
-function updateDiagnostics(document: TextDocument, collection: DiagnosticCollection): void {
+// TODO consider debouncing per document
+const updateDiagnostics = debounce((document: TextDocument, collection: DiagnosticCollection) => {
     if (!vscode.workspace.isTrusted || !config.features.liveTemplateAnalysis) {
         return;
     }
@@ -118,7 +119,7 @@ function updateDiagnostics(document: TextDocument, collection: DiagnosticCollect
         );
     });
     collection.set(document.uri, [...errors, ...deprecations]);
-}
+}, 300);
 
 function analyzeTemplate(document: TextDocument): TemplateValidatorResult|null|false {
     if (document.uri.scheme !== 'file' || (document.languageId !== 'fluid' && document.languageId !== 'html-fluid')) {
@@ -223,3 +224,15 @@ function tryAndVerifyAnalyzeCommand(command: BinaryCommand, input: string, cwd: 
     }
     return null;
 }
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+function debounce(callback: any, wait: number): any {
+  let timeoutId: NodeJS.Timeout;
+  return (...args: any[]) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      callback(...args);
+    }, wait);
+  };
+}
+/* eslint-enable @typescript-eslint/no-explicit-any */
