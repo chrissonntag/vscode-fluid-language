@@ -5,3 +5,4 @@ server/out/
 fluid/.Build/
 fluid/var/
 fluid/out/*.json
+vscode-fluid-language.vsix

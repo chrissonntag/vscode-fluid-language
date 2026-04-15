@@ -158,7 +158,8 @@
     "build": "tsdown",
     "watch": "tsdown -w --sourcemap",
     "lint": "tsc --noEmit && eslint",
-    "vscode-package": "vsce package"
+    "vscode-package": "vsce package -o vscode-fluid-language.vsix",
+    "vscode-publish": "vsce publish"
   },
   "dependencies": {
     "ajv": "^8.18.0"

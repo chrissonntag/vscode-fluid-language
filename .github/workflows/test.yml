@@ -18,7 +18,7 @@ jobs:
       - run: npm run lint
       # - run: npm test
 
-  test-distribution:
+  package:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
@@ -46,3 +46,7 @@ jobs:
           cache: "npm"
       - run: npm ci
       - run: npm run vscode-package
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # 7.0.1
+        with:
+          name: vscode-extension
+          path: vscode-fluid-language.vsix
