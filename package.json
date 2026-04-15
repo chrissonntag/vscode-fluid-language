@@ -3,22 +3,21 @@
   "displayName": "Fluid Templating Language",
   "description": "VSCode Extension for Fluid Templating Language",
   "license": "MIT",
-  "version": "0.0.1",
-  "publisher": "praetorius",
+  "version": "1.0.0",
+  "publisher": "friendsoftypo3",
   "icon": "extension.png",
   "galleryBanner": {
     "color": "#ff870",
     "theme": "light"
   },
   "bugs": {
-    "url": "https://github.com/s2b/vscode-fluid-language/issues",
-    "email": "sean@contoso.com"
+    "url": "https://github.com/FriendsOfTYPO3/vscode-fluid-language/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/s2b/vscode-fluid-language.git"
+    "url": "https://github.com/FriendsOfTYPO3/vscode-fluid-language.git"
   },
-  "homepage": "https://github.com/s2b/vscode-fluid-language/blob/main/README.md",
+  "homepage": "https://github.com/FriendsOfTYPO3/vscode-fluid-language/blob/main/README.md",
   "pricing": "Free",
   "categories": [
     "Programming Languages",

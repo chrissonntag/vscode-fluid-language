@@ -17,7 +17,7 @@ It has been tested with:
 * [VSCode](https://code.visualstudio.com/)
 * [VSCodium](https://vscodium.com/)
 * [Cursor](https://cursor.com/)
-* [Windsurf]()
+* [Windsurf](https://windsurf.com/)
 
 ## Features
 
