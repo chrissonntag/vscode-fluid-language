@@ -1,7 +1,7 @@
 import { spawnSync } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import type { ExtensionContext, TextDocument, DiagnosticCollection, WorkspaceConfiguration } from 'vscode';
+import type { ExtensionContext, TextDocument, DiagnosticCollection, WorkspaceConfiguration, LogOutputChannel } from 'vscode';
 import * as vscode from 'vscode';
 import Ajv, { ValidateFunction } from 'ajv';
 import type { ExtensionConfiguration, BinaryCommand, TemplateValidatorResult } from './types';
@@ -21,11 +21,17 @@ const config: ExtensionConfiguration = {
 let binaryPathCache: { [key: string]: BinaryCommand} = {};
 let validateFluidAnalyzeResult: ValidateFunction<TemplateValidatorResult>;
 let diagnosticCollection: DiagnosticCollection;
+let logChannel: LogOutputChannel;
 
 export async function activate(ctx: ExtensionContext) {
     // Create JSON schema validator
     const fluidAnalyzeResultSchema = JSON.parse(fs.readFileSync(path.join(ctx.extensionPath, 'client', 'fluidAnalyze.schema.json'), 'utf-8'));
     validateFluidAnalyzeResult = ajv.compile<TemplateValidatorResult>(fluidAnalyzeResultSchema);
+
+    // Create log
+    logChannel = vscode.window.createOutputChannel('Fluid Language', { log: true });
+    logChannel.clear();
+    ctx.subscriptions.push(logChannel);
 
     // Read extension configuration
     initializeConfiguration(vscode.workspace.getConfiguration('fluid'));
@@ -71,9 +77,11 @@ const updateDiagnostics = debounce((document: TextDocument, collection: Diagnost
     if (!analyzeResult) {
         collection.delete(document.uri);
         if (analyzeResult === false) {
+            logChannel.info('Try increasing the log level to "debug" to get more information about the issue.');
             vscode.window.showInformationMessage(
                 'Unable to provide live analysis for Fluid templates in this workspace.',
                 { identifier: 'configure', title: 'Configure manually' },
+                { identifier: 'showlog', title: 'Show log' },
                 { identifier: 'disable', title: 'Disable for workspace' },
             ).then(userOption => {
                 switch (userOption?.identifier) {
@@ -82,6 +90,10 @@ const updateDiagnostics = debounce((document: TextDocument, collection: Diagnost
                             'workbench.action.openWorkspaceSettings',
                             'fluid.bin'
                         );
+                        break;
+
+                    case 'showlog':
+                        logChannel.show();
                         break;
 
                     case 'disable':
@@ -189,38 +201,44 @@ function analyzeTemplate(document: TextDocument): TemplateValidatorResult|null|f
         const data = tryAndVerifyAnalyzeCommand(candidate, document.getText(), workspaceFolder);
         if (data) {
             binaryPathCache[workspaceFolder] = candidate;
-            console.log('Using "%s" as binary to analyze templates in "%s".', [candidate.command, ...candidate.args].join(' '), workspaceFolder);
+            const readableCommand = [candidate.command, ...candidate.args].join(' ');
+            logChannel.info(`Using "${readableCommand}" as binary to analyze templates in "${workspaceFolder}".`);
             return data;
         }
     }
+    const unavailableBinaries = candidates.map(candidate => [candidate.command, ...candidate.args].join(' ')).join("\n");
+    logChannel.error(`Unable to find suitable fluid binary for templates in "${workspaceFolder}. Usual binaries are not available: \n${unavailableBinaries}`)
     return false;
 }
 
 function tryAndVerifyAnalyzeCommand(command: BinaryCommand, input: string, cwd: string): TemplateValidatorResult|null {
+    const readableCommand = [command.command, ...command.args].join(' ');
+    let rawResult, rawError, errorCode;
     try {
         const process = spawnSync(command.command, command.args, { input, cwd });
-        const data = JSON.parse(process.stdout?.toString());
+        errorCode = process.status;
+        rawError = process.stderr?.toString();
+        rawResult = process.stdout?.toString();
+        const data = JSON.parse(rawResult);
         if (validateFluidAnalyzeResult(data)) {
             return data;
         } else if (command.userDefined && validateFluidAnalyzeResult.errors) {
             // Log validation errors for user-defined binaries to help with debugging
-            console.error(
-                'JSON validation failed while executing user-defined fluid binary "%s" in workspace folder "%s": %s',
-                [command.command, ...command.args].join(' '),
-                cwd,
-                validateFluidAnalyzeResult.errors.map(error => error.message).join('. '),
-            );
+            const errorMessages = validateFluidAnalyzeResult.errors.map(error => error.message).join('. ');
+            logChannel.error(`JSON validation failed while executing user-defined fluid binary "${readableCommand}" in workspace folder "${cwd}": ${errorMessages}`);
         }
     } catch (error) {
         // Log errors for user-defined binaries to help with debugging
         if (command.userDefined) {
-            console.error(
-                'Error while executing user-defined fluid binary "%s" in workspace folder "%s": %s',
-                [command.command, ...command.args].join(' '),
-                cwd,
-                error,
-            );
+            logChannel.error(`Error while executing user-defined fluid binary "${readableCommand}" in workspace folder "${cwd}": ${error}`);
         }
+    }
+    if (rawResult) {
+        logChannel.debug(`Possible fluid binary "${readableCommand}" in workspace folder "${cwd}" returned invalid result: ${rawResult}`);
+    } else if (rawError) {
+        logChannel.debug(`Possible fluid binary "${readableCommand}" in workspace folder "${cwd}" returned error message: ${rawError}`);
+    } else {
+        logChannel.debug(`Possible fluid binary "${readableCommand}" in workspace folder "${cwd}" returned error code: ${errorCode}`);
     }
     return null;
 }
