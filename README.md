@@ -3,7 +3,7 @@
 This extension for VSCode (and compatible code editors) provides language support
 for the [Fluid Templating Engine](https://github.com/TYPO3/Fluid).
 
-<mark>(TODO insert video)</mark>
+<https://github.com/user-attachments/assets/c1808e64-2939-4674-918f-fdfb58d3baf3>
 
 ## Installation
 
