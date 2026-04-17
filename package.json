@@ -158,8 +158,10 @@
     "build": "tsdown",
     "watch": "tsdown -w --sourcemap",
     "lint": "tsc --noEmit && eslint",
+    "publish": "npm run vscode-package && npm run vscode-publish && npm run ovsx-publish",
     "vscode-package": "vsce package -o vscode-fluid-language.vsix",
-    "vscode-publish": "vsce publish"
+    "vscode-publish": "vsce publish -i vscode-fluid-language.vsix",
+    "ovsx-publish": "ovsx publish vscode-fluid-language.vsix"
   },
   "dependencies": {
     "ajv": "^8.18.0"
@@ -174,8 +176,9 @@
     "eslint": "^10.1.0",
     "globals": "^17.4.0",
     "jiti": "^2.6.1",
+    "ovsx": "^0.10.11",
     "tsdown": "^0.21.7",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.3",
     "typescript-eslint": "^8.57.2"
   }
 }
