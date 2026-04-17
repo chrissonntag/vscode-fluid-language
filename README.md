@@ -132,6 +132,28 @@ composer install
 composer generate
 ```
 
+### Publishing to Marketplace
+
+Publishing is only possible with access to the registered publisher in Visual Studio Code
+Marketplace as well as a personal access token with the "manage marketplace" permission.
+Details are available in
+[publishing extension](https://code.visualstudio.com/api/working-with-extensions/publishing-extension). Same goes for Open VSX, see
+[Publishing with the ovsx Command](https://github.com/EclipseFdn/open-vsx.org/wiki/Publishing-Extensions#publishing-with-the-ovsx-command).
+
+Currently, this is done locally:
+
+```sh
+git checkout main && git pull
+npm version <TODO>
+npm run vscode-package
+npm exec vsce login friendsoftypo3
+npm run vscode-publish
+git push --follow-tags
+```
+
+Packaging is already setup in GitHub Actions. Once the release workflow is finalized and
+properly tested, this can be moved to GitHub Actions as well.
+
 ### Language Server Research
 
 During the creation of this extension, research and experiments have been done on the topic
