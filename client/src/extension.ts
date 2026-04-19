@@ -288,7 +288,7 @@ function detectTypo3Version(document: TextDocument): number|null
         });
     }
     for (const candidate of candidates) {
-        const process = spawnSync(candidate.command, candidate.args);
+        const process = spawnSync(candidate.command, candidate.args, { cwd: workspaceFolder });
         if (!process.stdout) {
             continue;
         }
