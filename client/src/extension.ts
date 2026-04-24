@@ -10,8 +10,14 @@ const ajv = new Ajv();
 
 const config: ExtensionConfiguration = {
     bin: {
-        typo3: '',
-        fluid: '',
+        typo3: {
+            path: '',
+            args: [],
+        },
+        fluid: {
+            path: '',
+            args: [],
+        },
         useDdevIfAvailable: true,
     },
     features: {
@@ -62,8 +68,10 @@ export async function activate(ctx: ExtensionContext) {
 }
 
 function initializeConfiguration(configuration: WorkspaceConfiguration): void {
-    config.bin.fluid = configuration.get('bin.fluid') ?? '';
-    config.bin.typo3 = configuration.get('bin.typo3') ?? '';
+    config.bin.fluid.path = configuration.get('bin.fluid.path') ?? '';
+    config.bin.fluid.args = configuration.get('bin.fluid.args') ?? [];
+    config.bin.typo3.path = configuration.get('bin.typo3.path') ?? '';
+    config.bin.typo3.args = configuration.get('bin.typo3.args') ?? [];
     config.bin.useDdevIfAvailable = configuration.get('useDdevIfAvailable') ?? true;
     config.features.liveTemplateAnalysis = configuration.get('features.liveTemplateAnalysis') ?? true;
 }
@@ -199,17 +207,27 @@ function analyzeTemplate(document: TextDocument): TemplateValidatorResult|null|f
     const isDdevProject = config.bin.useDdevIfAvailable ? fs.existsSync(path.join(workspaceFolder, '.ddev')) : false;
     const ddev = isDdevProject ? spawnSync('which', ['ddev'], { shell: true }).stdout.toString().trim() : '';
 
-    if (config.bin.typo3) {
+    if (config.bin.typo3.path) {
         candidates.push({
-            command: config.bin.typo3.replaceAll('${workspaceFolder}', workspaceFolder),
-            args: ['fluid:analyze', '--json', '--stdin'],
+            command: config.bin.typo3.path.replaceAll('${workspaceFolder}', workspaceFolder),
+            args: [
+                ...config.bin.typo3.args.map(arg => arg.replaceAll('${workspaceFolder}', workspaceFolder)),
+                'fluid:analyze',
+                '--json',
+                '--stdin',
+            ],
             userDefined: true,
         });
     }
-    if (config.bin.fluid) {
+    if (config.bin.fluid.path) {
         candidates.push({
-            command: config.bin.fluid.replaceAll('${workspaceFolder}', workspaceFolder),
-            args: ['analyze', '--json', '--stdin'],
+            command: config.bin.fluid.path.replaceAll('${workspaceFolder}', workspaceFolder),
+            args: [
+                ...config.bin.fluid.args.map(arg => arg.replaceAll('${workspaceFolder}', workspaceFolder)),
+                'analyze',
+                '--json',
+                '--stdin',
+            ],
             userDefined: true,
         });
     }
@@ -268,10 +286,13 @@ function detectTypo3Version(document: TextDocument): number|null
     const ddev = isDdevProject ? spawnSync('which', ['ddev'], { shell: true }).stdout.toString().trim() : '';
 
     // TODO optimize this to avoid duplicate calls to non-existent binaries
-    if (config.bin.typo3) {
+    if (config.bin.typo3.path) {
         candidates.push({
-            command: config.bin.typo3.replaceAll('${workspaceFolder}', workspaceFolder),
-            args: ['--version'],
+            command: config.bin.typo3.path.replaceAll('${workspaceFolder}', workspaceFolder),
+            args: [
+                ...config.bin.typo3.args.map(arg => arg.replaceAll('${workspaceFolder}', workspaceFolder)),
+                '--version',
+            ],
             userDefined: true,
         });
     }

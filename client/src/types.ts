@@ -30,8 +30,14 @@ export interface BinaryCommand {
 
 export interface ExtensionConfiguration {
     bin: {
-        typo3: string,
-        fluid: string,
+        typo3: {
+            path: string,
+            args: string[],
+        },
+        fluid: {
+            path: string,
+            args: string[],
+        },
         useDdevIfAvailable: boolean,
     },
     features: {

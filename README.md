@@ -41,7 +41,7 @@ TYPO3 versions the
 [companion extension](https://extensions.typo3.org/extension/fluid_companion) needs to
 be installed.
 
-The following folders are checked for the `fluid` and `typo3` binaries:
+The following folders are checked for the `fluid` and `typo3` binaries automatically:
 
 * `vendor/bin/`
 * `bin/`
@@ -53,10 +53,27 @@ If [DDEV](https://ddev.com/) is available and the project has DDEV set up, the b
 are executed inside of the web container by default. This can be turned off by disabling
 `fluid.bin.useDdevIfAvailable` in the extension's configuration.
 
-Custom paths to the binaries can also be specified in the extension's configuration via
-`fluid.bin.typo3` and `fluid.bin.fluid`. `${workspaceFolder}` is substituted with the
-path of the current workplace folder. Apart from that, these are currently **not**
-preprocessed, so be extra careful.
+If necessary, custom binaries can also be specified in the extension's configuration via
+`fluid.bin.typo3.*` and `fluid.bin.fluid.*`. `${workspaceFolder}` is substituted with the
+path of the current workplace folder. Example (execute `fluid` within anonymous docker container):
+
+```json
+{
+    "fluid.bin.fluid.path": "docker",
+    "fluid.bin.fluid.args": [
+        "run",
+        "-i",
+        "--rm",
+        "-v",
+        "${workspaceFolder}:/app",
+        "-w",
+        "/app",
+        "php:8.5-cli",
+        "php",
+        "vendor/bin/fluid"
+    ]
+}
+```
 
 ### ViewHelper Autocomplete & Documentation
 
