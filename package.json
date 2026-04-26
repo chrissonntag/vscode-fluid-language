@@ -6,10 +6,6 @@
   "version": "1.0.0",
   "publisher": "FriendsOfTYPO3",
   "icon": "extension.png",
-  "galleryBanner": {
-    "color": "#ff8700",
-    "theme": "light"
-  },
   "bugs": {
     "url": "https://github.com/FriendsOfTYPO3/vscode-fluid-language/issues"
   },
