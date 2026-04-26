@@ -9,8 +9,8 @@ for the [Fluid Templating Engine](https://github.com/TYPO3/Fluid).
 
 The extension is available in the common marketplaces:
 
-* Visual Studio Marketplace <mark>(TODO add link)</mark>
-* OpenVSX <mark>(TODO add link)</mark>
+* [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=FriendsOfTYPO3.fluid-language)
+* [OpenVSX](https://open-vsx.org/extension/FriendsOfTYPO3/fluid-language)
 
 It has been tested with:
 
