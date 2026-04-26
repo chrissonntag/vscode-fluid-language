@@ -4,7 +4,7 @@
   "description": "VSCode Extension for Fluid Templating Language",
   "license": "MIT",
   "version": "1.0.0",
-  "publisher": "friendsoftypo3",
+  "publisher": "FriendsOfTYPO3",
   "icon": "extension.png",
   "galleryBanner": {
     "color": "#ff8700",
