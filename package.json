@@ -1,6 +1,6 @@
 {
-  "name": "vscode-fluid-language",
-  "displayName": "Fluid Templating Language",
+  "name": "fluid-language",
+  "displayName": "Fluid Template Language",
   "description": "VSCode Extension for Fluid Templating Language",
   "license": "MIT",
   "version": "1.0.0",
