@@ -5,6 +5,7 @@ import type { ExtensionContext, TextDocument, DiagnosticCollection, WorkspaceCon
 import * as vscode from 'vscode';
 import Ajv, { ValidateFunction } from 'ajv';
 import type { ExtensionConfiguration, BinaryCommand, TemplateValidatorResult } from './types';
+import { clearViewHelperIndexCache, createViewHelperDefinitionProvider } from './viewHelpers';
 
 const ajv = new Ajv();
 
@@ -22,6 +23,7 @@ const config: ExtensionConfiguration = {
     },
     features: {
         liveTemplateAnalysis: true,
+        viewHelperDefinitions: true,
     }
 }
 let binaryPathCache: { [key: string]: BinaryCommand} = {};
@@ -44,10 +46,29 @@ export async function activate(ctx: ExtensionContext) {
     ctx.subscriptions.push(vscode.workspace.onDidChangeConfiguration(e => {
         if (e.affectsConfiguration('fluid')) {
             initializeConfiguration(vscode.workspace.getConfiguration('fluid'));
-            // Clear runtime cache on configuration changes
+            // Clear runtime caches on configuration changes
             binaryPathCache = {};
+            clearViewHelperIndexCache();
         }
     }));
+
+    // Register go to definition for ViewHelpers
+    ctx.subscriptions.push(vscode.languages.registerDefinitionProvider(
+        ['fluid', 'html-fluid'],
+        createViewHelperDefinitionProvider(() => config.features.viewHelperDefinitions, logChannel),
+    ));
+    // Installing or removing packages changes which ViewHelpers exist
+    for (const pattern of [
+        '**/Configuration/Fluid/Namespaces.php',
+        '**/ext_localconf.php',
+        '**/composer/autoload_psr4.php',
+    ]) {
+        const watcher = vscode.workspace.createFileSystemWatcher(pattern);
+        watcher.onDidCreate(clearViewHelperIndexCache);
+        watcher.onDidChange(clearViewHelperIndexCache);
+        watcher.onDidDelete(clearViewHelperIndexCache);
+        ctx.subscriptions.push(watcher);
+    }
 
     // Register as diagnostics provider
     diagnosticCollection = vscode.languages.createDiagnosticCollection('fluid');
@@ -74,6 +95,7 @@ function initializeConfiguration(configuration: WorkspaceConfiguration): void {
     config.bin.typo3.args = configuration.get('bin.typo3.args') ?? [];
     config.bin.useDdevIfAvailable = configuration.get('useDdevIfAvailable') ?? true;
     config.features.liveTemplateAnalysis = configuration.get('features.liveTemplateAnalysis') ?? true;
+    config.features.viewHelperDefinitions = configuration.get('features.viewHelperDefinitions') ?? true;
 }
 
 // TODO consider debouncing per document
